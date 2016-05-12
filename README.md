@@ -28,3 +28,11 @@ You can predifine which reactions you want to consider by defining stoichometric
 
 You can also specify a priory known reaction (reactions, which won't be allowed to exclude from learning procedure) in a file: filename.mat and specify its name in running options as for example ReactionetLassoMain( ModelName, p, 'filename'). File with prior knowledge reactions should contain varible:
 	- indx - indexes of priorly known reactions in stoichiometric matrix
+
+OUTPUT:
+Reactionet lasso creates several output folders:
+	- Moments - contains all the estimated moments
+	- LinearSystem - here information about Disign matrix and Response vector is stored
+	- resultsCV - intermidiate results for each cross-validation fold
+	- results - final results
+	- plots - supporting plots for final results
