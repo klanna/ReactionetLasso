@@ -24,7 +24,7 @@ All the initial data (time points, abundances, species names) should be stored i
 - Names of measured species should be stored in a cell array 1xN_species called SpeciesNames
 
 Prior knowledge
-###
+-----------
 You can predefine which reactions you want to consider by defining stoichiometric matrix in file Topology.mat in your data-folder. Otherwise, it will automatically construct full graph of all possible topologies. Topology.mat should contain following variables: 
 - stoich = (N_species x N_reactions)
 - stoichiometric matrix
