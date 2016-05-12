@@ -17,7 +17,7 @@ optional:
 - PriorGraph (string with filename; default = '') = list of a priori known reactions
 
 Data 
-=======
+-----------
 All the initial data (time points, abundances, species names) should be stored in the following format in the following folder: 'data/$ModelName/' in a mat-filed called 'data', (for example 'data/ES100kDT4sp9tp/data.mat'). Inside of the file data should be arranged into following variables: 
 - Information about time points should be stored in variable: Timepoints = (N_Tx1 double), N_T - number of time points 
 - Snapshot data points should be stored in 1xN_T cell array named data 
