@@ -1,0 +1,70 @@
+function bg = CreateGraphObj( AdjMat, NodesProp, SpFlag, TPMat, FPMat, PMat, varargin )
+% create biograph object
+    if ~isempty(varargin)
+        bg = biograph(AdjMat, NodesProp.Names, 'ShowArrows','on', 'LayoutType', varargin{1});   
+    else
+        bg = biograph(AdjMat, NodesProp.Names, 'ShowArrows','on'); 
+    end
+    
+    %% set prperties
+    NodeColor = [153 204 255]/255;
+    NodeColorH = [255 255 255]/255;
+    ReactColorTP = [1 0 0]; % red
+    ReactColorFP = [0 0 1]; % blue
+    ReactColorFN = [255 204 229]/255; % pink
+    ReactColorP = [51 0 0]/255;
+    %%
+    set(bg.edges,'LineColor',ReactColorFN);
+    set(bg,'LayoutScale',0.5);
+    set(bg,'NodeAutoSize','on');
+
+    for i = [NodesProp.OriNodes]
+        bg.nodes(i).Shape = 'rectangle';
+        bg.nodes(i).Size = [60 30];
+        if SpFlag(i)
+            bg.nodes(i).color = NodeColor;
+        else
+            bg.nodes(i).color = NodeColorH;
+        end
+        bg.nodes(i).FontSize = 24;
+    end
+    
+    for i = [NodesProp.ReactNodes]
+        bg.nodes(i).Shape = 'diamond';
+        bg.nodes(i).Size = [1 1];
+        bg.nodes(i).color = ReactColorFN;
+    end
+    
+    if ~isempty([NodesProp.FP])
+        for i = [NodesProp.FP]
+            bg.nodes(i).color = ReactColorFP;
+        end
+    end
+    
+    if ~isempty([NodesProp.TP])
+        for i = [NodesProp.TP]
+            bg.nodes(i).color = ReactColorTP;
+        end
+    end
+
+
+    [indx_I, indx_J, ~ ] = find(TPMat);
+    for i = 1:length(indx_I)
+        EdgesOut = getedgesbynodeid(bg,bg.nodes(indx_I(i)).id,bg.nodes(indx_J(i)).id);
+        set(EdgesOut,'LineColor',ReactColorTP, 'LineWidth', 3);
+    end
+    
+    [indx_I, indx_J, ~ ] = find(PMat);
+    for i = 1:length(indx_I)
+        EdgesOut = getedgesbynodeid(bg,bg.nodes(indx_I(i)).id,bg.nodes(indx_J(i)).id);
+        set(EdgesOut,'LineColor',ReactColorP, 'LineWidth', 1);
+    end
+    
+    [indx_I, indx_J, ~ ] = find(FPMat);
+    for i = 1:length(indx_I)
+        EdgesOut = getedgesbynodeid(bg,bg.nodes(indx_I(i)).id,bg.nodes(indx_J(i)).id);
+        set(EdgesOut,'LineColor',ReactColorFP, 'LineWidth', 2);
+    end
+    
+end
+
