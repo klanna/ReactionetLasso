@@ -15,7 +15,7 @@ function ReactionetLassoSS( ModelName, varargin )
     PlotComputationTime( FolderNames.Results, ModelName, RunTimeS, RunTimeSname);
     
     M = [VertVect(mse) VertVect(AIC) VertVect(BIC)];
-    ICplot( card, M, ScoreFunctionNameList, FileNameOut);
+    ICplot( card, M, {'mse', 'AIC', 'BIC'}, FileNameOut);
     
     load(sprintf('%s/Topology.mat', FolderNames.Data));
     load(sprintf('%s/Data.mat', FolderNames.Data), 'SpeciesNames');

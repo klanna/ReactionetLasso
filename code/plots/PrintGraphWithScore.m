@@ -6,6 +6,6 @@ function bg = PrintGraphWithScore( filename, stoich, SpeciesNames, TPList, FPLis
     
     fig = get(g.biograph.hgAxes, 'Parent');
 
-    PDFprint(sprintf('%s_Biograph', filename), fig, 8, 8);
+    PDFprint(sprintf('%s_Biograph', filename), fig, 3.5, 3.5);
 end
 

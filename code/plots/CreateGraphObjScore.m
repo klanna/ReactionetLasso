@@ -19,7 +19,7 @@ function bg = CreateGraphObjScore( AdjMat, NodesProp, TPMat, FPMat, PMat )
         bg.nodes(i).Shape = 'rectangle';
         bg.nodes(i).Size = [60 30];
         bg.nodes(i).color = NodeColor;
-        bg.nodes(i).FontSize = 14;
+        bg.nodes(i).FontSize = 10;
     end
     
     for i = [NodesProp.ReactNodes]

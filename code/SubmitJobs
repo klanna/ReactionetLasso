@@ -1,3 +1,16 @@
+nohup ./ReactionetLasso.py -m ES100kDT4sp15tp -o 2 -g splines &
+
+nohup ./ReactionetLasso.py -m MisARS5bn100kDT14sp15tp -o 2 -g splines -p 0.05 &
+
+nohup ./ReactionetLasso.py -m ARS5bn100kDT14sp15tp -o 2 -g splines -p 0.05 &
+
+
+nohup ./ReactionetLasso.py -m ARS100kDT14sp15tp -p 1 -o 2 -g splines &
+
+
+
+
+++++ old ++++
 nohup ./ReactionetLasso.py -m ARS100kDT14sp15tp -p 1 -o 2 -g splines &
 
 nohup ./ReactionetLasso.py -m ARS100kDT14sp15tp -p 1 -o 2 -g splines -a PriorGraph_0 &

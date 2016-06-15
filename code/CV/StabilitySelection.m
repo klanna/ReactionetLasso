@@ -21,6 +21,8 @@ function [xOpt, ScoreFunctionNameList, mse, AIC, BIC, card, RunTimeS, RunTimeSna
             constrWCV{cv} = constr .* weightsCV{cv}; 
             
             load(sprintf('%s/ValidationSet.mat', FolderNamesCV.Moments))
+            [ E, V, C, E2, C3, E12 ] = CorrectMomentsForBinomialNoise( E, V, C, E2, C3, E12, FolderNames.p );
+
             switch FolderNames.Gradients
                 case 'FD'
                     if FolderNames.NMom == 2

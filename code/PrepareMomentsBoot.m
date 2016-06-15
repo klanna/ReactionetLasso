@@ -23,9 +23,7 @@ function [ Eb, Vb, Cb, E2b, C3b, E12b, RunTimeS ] = PrepareMomentsBoot( boot, Mo
     end
     % LOAD DATA
 
-    if ~exist(OutFileName, 'file')
-        rng(boot);
-        
+    if ~exist(OutFileName, 'file')        
         ts = tic;
         for t = 1:length(Timepoints)
             Trajectories = dataTR{t};

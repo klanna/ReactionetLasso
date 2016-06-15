@@ -1,4 +1,4 @@
-function ReactionetLassoPlots( ModelName, varargin )
+function ReactionetLassoResultPlots( ModelName, varargin )
 % Main procedure
     ts = tic; % start time
     fpath = regexprep(pwd, 'ReactionetLasso/.*', 'ReactionetLasso/'); % path to the code-folder
@@ -22,24 +22,6 @@ function ReactionetLassoPlots( ModelName, varargin )
         N_T = length(Timepoints)-1;
         N_sp = length(SpeciesNames);
         kTrue = AnnotateTrueReactions( k, stoichTR, stoich );
-
-        StepName = 'BoostFeatureSelecion';
-        FName = sprintf('%s/%s', FolderNames.ResultsCV, StepName);
-        load(sprintf('%s.mat', FName));    
-        xb = mean(sign(xboost), 2);
-        PlotScatterCons( sign(kTrue), xb, StepName, sprintf('%s/%s', FolderNames.PlotsCV, StepName), pic);
-        
-        StepName = 'StepOLS';
-        FName = sprintf('%s/%s', FolderNames.ResultsCV, StepName);
-        load(sprintf('%s.mat', FName));    
-        PlotScatterCons( kTrue, BestResStat.xOriginal, StepName, sprintf('%s/%s', FolderNames.PlotsCV, StepName), pic);
-        PlotFitToLinearSystem( FolderNames.NMom, b, BestResStat.b_hat, N_T, N_sp, sprintf('%s/%s', FolderNames.PlotsCV, StepName), pic);
-        
-        StepName = 'StepFG';
-        FName = sprintf('%s/%s', FolderNames.ResultsCV, StepName);
-        load(sprintf('%s.mat', FName));    
-        PlotScatterCons( kTrue, BestResStat.xOriginal, StepName, sprintf('%s/%s', FolderNames.PlotsCV, StepName), pic);
-        PlotFitToLinearSystem( FolderNames.NMom, b, BestResStat.b_hat, N_T, N_sp, sprintf('%s/%s', FolderNames.PlotsCV, StepName), pic);
         
         StepName = 'StepLASSO';
         FName = sprintf('%s/%s', FolderNames.ResultsCV, StepName);
@@ -71,7 +53,7 @@ function ReactionetLassoPlots( ModelName, varargin )
     ResScore(ReNumList) = xscore;
     
     FileName = sprintf('%s/StabilitySelection_%s', FolderNames.Plots, ModelName);
-    StabilitySelectionPlot( FDRscore, ResScore, '', ScoreFunctionNameList(2:end), FileName, xOptIndx(2:end));
+    StabilitySelectionPlot( FDRscore, sort(ResScore, 'descend'), '', ScoreFunctionNameList(2:end), FileName, xOptIndx(2:end));
     
     for i = 2:length(ScoreFunctionNameList)
         OptName = ScoreFunctionNameList{i};

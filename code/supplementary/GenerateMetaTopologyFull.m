@@ -1,0 +1,106 @@
+function [stoichAll, ReactionNamesAll] = GenerateMetaTopologyFull(SpeciesNames, varargin)
+% CompartmentList - list indicating in which compartment is the specie
+% BorderCompartment should have 0 value
+    ts = tic;
+    fprintf('GenerateMetaTopology...\n');
+    N_sp = length(SpeciesNames);
+    
+    if ~isempty(varargin)
+        CompartmentList = varargin{1};
+    else
+        CompartmentList = ones(N_sp, 1);
+    end
+	
+    CompartNames = sort(unique(CompartmentList));
+    xyzCombinations = [];
+    
+    BorderCompartment = find(CompartNames == 0);
+    if ~isempty(BorderCompartment)
+        IndxBorderCompartment  = VertVect(find(CompartmentList == CompartNames(BorderCompartment)));
+        CompartNames(BorderCompartment) = [];
+    else
+        IndxBorderCompartment = [];
+    end    
+    
+    for i = 1:length(CompartNames)
+        CompartIndx = [VertVect(find(CompartmentList == CompartNames(i))); IndxBorderCompartment];
+        xyzCombinations = [xyzCombinations; combnk(CompartIndx, 3)];
+    end
+        
+    Nxyz = size(xyzCombinations, 1);
+	N_re = Nxyz*6;
+	fprintf('N_re = %u\n', N_re);
+
+	l = 0;
+    for xyz = 1:Nxyz
+    	% fprintf('%u \n', xyz);
+		x = xyzCombinations(xyz, 1);
+		y = xyzCombinations(xyz, 2);
+		z = xyzCombinations(xyz, 3);
+
+		l = l+1;
+		[ ReactionNamesAll{l}, stoichAll(:, l)] = GenerateReactionTopologyX_YZ( x, y, z, SpeciesNames, N_sp);
+		l = l+1;
+		[ ReactionNamesAll{l}, stoichAll(:, l)] = GenerateReactionTopologyXY_Z( x, y, z, SpeciesNames, N_sp);
+
+		l = l+1;
+		[ ReactionNamesAll{l}, stoichAll(:, l)] = GenerateReactionTopologyX_YZ( y, z, x, SpeciesNames, N_sp);
+		l = l+1;
+		[ ReactionNamesAll{l}, stoichAll(:, l)] = GenerateReactionTopologyXY_Z( y, z, x, SpeciesNames, N_sp);
+
+		l = l+1;
+		[ ReactionNamesAll{l}, stoichAll(:, l)] = GenerateReactionTopologyX_YZ( z, x, y, SpeciesNames, N_sp);
+		l = l+1;
+		[ ReactionNamesAll{l}, stoichAll(:, l)] = GenerateReactionTopologyXY_Z( z, x, y, SpeciesNames, N_sp);
+    end
+
+    for i = 1:N_sp
+        for j = 1:N_sp
+            if i ~= j
+                ReactionNamesAll{end+1} = sprintf('%s -> %s', SpeciesNames{i}, SpeciesNames{j});
+                v = zeros(N_sp, 1);
+                v(i) = -1;
+                v(j) = 1;
+                stoichAll(:, end+1) = v;
+            end
+        end
+    end
+
+    fprintf('%.3f sec\n', toc(ts));
+end
+
+function [ ReactName, StoichVector, PropVector] = GenerateReactionTopologyXY_Z( x, y, z, SpeciesNames, N_sp)
+% x + y -> z
+    StoichVector = zeros(1, N_sp);
+    StoichVector(x) = -1;
+    StoichVector(y) = -1;
+    StoichVector(z) = 1;
+    PropVector(x) = 1;
+    PropVector(y) = 1;
+    ReactName = GeneratereactionName( SpeciesNames, StoichVector );
+end
+
+function [ ReactName, StoichVector] = GenerateReactionTopologyX_YZ( x, y, z, SpeciesNames, N_sp)
+% x + y <- z
+    StoichVector = zeros(1, N_sp);
+    StoichVector(x) = 1;
+    StoichVector(y) = 1;
+    StoichVector(z) = -1;
+    ReactName = GeneratereactionName( SpeciesNames, StoichVector );
+end
+
+function [ ReactName ] = GeneratereactionName( SpeciesNames, stoich )
+    f_in = '->';
+    f_out = '';
+    ReactName = '';
+    for i = 1:length(stoich)
+        switch stoich(i)
+            case 1
+                ReactName = strcat(ReactName, f_in, SpeciesNames(i));
+                f_in = '+';
+            case -1
+                ReactName = strcat(SpeciesNames(i), f_out, ReactName);
+                f_out = '+';
+        end
+    end
+end

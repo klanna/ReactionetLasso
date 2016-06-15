@@ -12,7 +12,12 @@ function ModelParams = ReadInputParameters( varargin )
     ModelParams.p = 1;
     
     if ~isempty(varargin)
-        varargin = varargin{1};
+        while isequal(class(varargin{1}), 'cell') 
+            varargin = varargin{1};
+            if isempty(varargin)
+                break
+            end
+        end
         for i = 1:length(varargin)
             tmp = varargin{i};
             switch class(tmp)

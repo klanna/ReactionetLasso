@@ -14,9 +14,9 @@ function [ E, V, C, E2, C3, Ci_ij ]= PrepareMomentsFromTrajectories( Trajectorie
 
     if N_sample > 1
         w = N_sample / (N_sample-1);
-
-        if boot > 1
-            rng(boot);
+        
+        rng(boot);
+        if boot > 1            
             Trajectories = datasample(Trajectories, size(Trajectories, 2), 2);
         end
 

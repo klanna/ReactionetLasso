@@ -3,7 +3,7 @@ function [ values, weights ] = WeightDesignForRegression( indx_I, indx_J, values
 % indx_I, indx_J, values, N_obs, N_re - design
 % (A/weights)*(x*weights), x_w = x*weights
     tsld = tic;
-    fprintf('weight design...\t');
+%     fprintf('weight design...\t');
     
     A = sparse(indx_I, indx_J, values, N_obs, N_re);
     
@@ -12,6 +12,6 @@ function [ values, weights ] = WeightDesignForRegression( indx_I, indx_J, values
     weights(weights == 0) = 1;
     values = WeightSparseMatrix( indx_J, values, 1 ./ weights);
 
-    fprintf('%.2f sec\n', toc(tsld));
+%     fprintf('%.2f sec\n', toc(tsld));
 end
 
