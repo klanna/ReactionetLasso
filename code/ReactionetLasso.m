@@ -16,7 +16,7 @@ function ReactionetLasso( ModelName, nset, varargin )
 %     if ~exist(ReactionetLassoFile, 'file')
         load(sprintf('%s/Data.mat', FolderNames.Data), 'Timepoints', 'SpeciesNames')
         
-        [stoich, RunTimeS(end+1), RunTimeSname{end+1} ] = PrepareTopologyFull( FolderNames );        
+        [stoich, RunTimeS(end+1), RunTimeSname{end+1} ] = PrepareTopology( FolderNames );        
         [ E, V, C, E2, C3, E12, RunTimeS(end+1), RunTimeSname{end+1} ] = PrepareMoments( FolderNames, varargin );
         
         N_T = size(E, 2)-1;
@@ -32,13 +32,13 @@ function ReactionetLasso( ModelName, nset, varargin )
         %% Prepare covariance matrix
         [bStdEps, RunTimeS(end+1), RunTimeSname{end+1}] = CovarianceOfResponse( FolderNames, E, V, C, E2, C3, E12, stoich, b, bStd, BestResStat.xOriginal); % Prepare Covariance Matrix
         
-        [xb, RunTimeS, RunTimeSName] = BoostFeatureSelecion( FolderNames, E, V, C, E2, C3, E12, stoich, b, constr, bStdEps);
+%         [xb, RunTimeS, RunTimeSName] = BoostFeatureSelecion( FolderNames, E, V, C, E2, C3, E12, stoich, b, constr, bStdEps);
         %% normalize linear system on covariance
         [ bNoiseNorm, bStdEps, valuesNoiseNorm ] = NoiseNormalization( bStdEps, b, indx_I, values);    %  b-cov weightening
         
         %% Feasible Generalized Least Squares Step
-        [xb, RunTimeS, RunTimeSName] = BoostFeatureSelecion( FolderNames, E, V, C, E2, C3, E12, stoich, b, constr);
-        [BestResStat, RunTimeS(end+1), RunTimeSname{end+1}] = StepFG( FolderNames, indx_I, indx_J, valuesNoiseNorm, N_obs, N_re, bNoiseNorm, bStdEps, constr, find(xb));        
+%         [xb, RunTimeS, RunTimeSName] = BoostFeatureSelecion( FolderNames, E, V, C, E2, C3, E12, stoich, b, constr);
+        [BestResStat, RunTimeS(end+1), RunTimeSname{end+1}] = StepFG( FolderNames, indx_I, indx_J, valuesNoiseNorm, N_obs, N_re, bNoiseNorm, bStdEps, constr);        
         
         %% Adaptive Relaxed Lasso Step 
         [StatLassoLL, RunTimeS(end+1), RunTimeSname{end+1}] = StepLASSO( FolderNames, indx_I, indx_J, valuesNoiseNorm, N_obs, N_re, N_sp, bNoiseNorm, bStdEps, constr, BestResStat, PriorGraph.indx);

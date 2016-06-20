@@ -8,8 +8,6 @@ function [AdjMat, TPMat, FPMat, PMat, NodesProp] = CreateReactionGraphAdjMatrixS
 % TPList
 % FPList
 % PriorList
-    [~, idxScoreList] = sort(ScoreList, 'descend');
-
     [N_sp, N_re] = size(stoich);
     AdjMat = zeros(N_sp, N_sp);
     TPMat = AdjMat;
@@ -59,12 +57,12 @@ function [AdjMat, TPMat, FPMat, PMat, NodesProp] = CreateReactionGraphAdjMatrixS
        
        if FlagReverse
            sp_re = sp_new_list(FlagReverse);
-           SpeciesNames{sp_re} = sprintf('%u,%u', find(idxScoreList == i), find(idxScoreList == re));
+           SpeciesNames{sp_re} = sprintf('%u,%u', i, re);
        else
            sp_re = length(SpeciesNames) + 1;
            l = l + 1;
            NodesProp.ReactNodes(l) = sp_re;
-           SpeciesNames{sp_re} = sprintf('%u', find(idxScoreList == re));
+           SpeciesNames{sp_re} = sprintf('%u', re);
        end
        sp_new_list(re) = sp_re;
        

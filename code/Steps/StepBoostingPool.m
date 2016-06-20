@@ -1,6 +1,6 @@
 function [BestResStat, RunTimeS, RunTimeSname] = StepBoostingPool(FolderNames, indx_I, indx_J, values, N_obs, N_re, b, constr, N_T, N_sp, iboost)
     RunTimeSname = 'StepBoostingPool';
-%     fprintf('----------------%s----------------\n', RunTimeSname);
+    fprintf('----------------%s----------------\n', RunTimeSname);
     OutFolder = sprintf('%s/%s/', FolderNames.ResultsCV, RunTimeSname);
     if ~exist(OutFolder, 'dir')
        mkdir(OutFolder) 
@@ -33,7 +33,7 @@ function [BestResStat, RunTimeS, RunTimeSname] = StepBoostingPool(FolderNames, i
         
         RunTimeS = toc(ts);
         save(OutFileName, 'BestResStat', 'RunTimeS');      
-%         FormatTime( RunTimeS, 'StepBoostingPool finished in ' );
+        FormatTime( RunTimeS, 'StepBoostingPool finished in ' );
 %         PlotFitToLinearSystem( FolderNames.NMom, b, A*BestResStat.xOriginal, N_T, N_sp, sprintf('%s/%s', FolderNames.PlotsCV, RunTimeSname), 'off');
     else
         RunTimeS = toc(ts);

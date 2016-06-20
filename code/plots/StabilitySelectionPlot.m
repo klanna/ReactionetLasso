@@ -1,4 +1,4 @@
-function StabilitySelectionPlot( M, ResScore, titlename, iBestNames, FileName, iBest)
+function StabilitySelectionPlot( M, titlename, iBestNames, FileName, iBest)
     fprintf('StabilitySelectionPlot\n');
     PaperFonts
     
@@ -9,12 +9,7 @@ function StabilitySelectionPlot( M, ResScore, titlename, iBestNames, FileName, i
 
     figname = 'StabilitySelectionPlot';
     fig = figure('Name', figname, 'visible', 'off');
-    subplot(1, 2, 1)
-    plot(ResScore(1:size(M, 1)), '-x', 'color', MyColor(1, :), 'MarkerSize', MarkerSize, 'LineWidth', lwidth )
-    box on
-    axis square
 
-    subplot(1, 2, 2)
     M_fp = M(:, 2);
     M_tp = M(:, 1);
     plot(M_fp, M_tp, '-', 'color', MyColor(1, :), 'MarkerSize', MarkerSize, 'LineWidth', lwidth)

@@ -63,7 +63,7 @@ function z_path = LassoVpathChol(A, b, rho, weights, N_sp, varargin)
         status = 'Unsolved';
         lambda = lambda_list(lambda_i) ./ weights;
         lambda(find(LeftBorder)) = 0;
-%         fprintf('lambda = e ^ (%.0f)\n', log(lambda_list(lambda_i)));
+        fprintf('lambda = e ^ (%.0f)\n', log(lambda_list(lambda_i)));
         
         for k = 1:MAX_ITER
             % x-update
@@ -120,8 +120,8 @@ function z_path = LassoVpathChol(A, b, rho, weights, N_sp, varargin)
         z_path(lambda_l).l1 = sum( z ./ weights );  
         z_path(lambda_l).rss = 0.5 * sum((b - A*z).^2);
 
-%         fprintf('%s: %u iter (%.2f sec)\n', z_path(lambda_l).status, z_path(lambda_l).iter, z_path(lambda_l).time);
-%         fprintf('l1 = %.2e, RSS = %.2e\n',  z_path(lambda_l).l1, z_path(lambda_l).rss);    
+        fprintf('%s: %u iter (%.2f sec)\n', z_path(lambda_l).status, z_path(lambda_l).iter, z_path(lambda_l).time);
+        fprintf('l1 = %.2e, RSS = %.2e\n',  z_path(lambda_l).l1, z_path(lambda_l).rss);    
     end
     
     fprintf('Lasso_LSQR finished in \t');

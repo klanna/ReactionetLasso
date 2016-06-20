@@ -1,4 +1,4 @@
-function [BestResStat, RunTimeS, RunTimeSname]= StepFG( FolderNames, indx_I, indx_J, values, N_obs, N_re, b, bStdEps, constr, indxPos)
+function [BestResStat, RunTimeS, RunTimeSname]= StepFG( FolderNames, indx_I, indx_J, values, N_obs, N_re, b, bStdEps, constr)
     RunTimeSname = 'StepFG';
     fprintf('----------------%s----------------\n', RunTimeSname);
     OutFolder = sprintf('%s/', FolderNames.ResultsCV);
@@ -13,8 +13,8 @@ function [BestResStat, RunTimeS, RunTimeSname]= StepFG( FolderNames, indx_I, ind
         constrW = constr .* weights;
     %% solution
         x = zeros(N_re, 1);
-        x(indxPos) = lsq_step(Aw(:, indxPos), b, weights(indxPos), constrW(indxPos));
-%         x = lsq_step(Aw, b, weights, constrW); % old version   
+%         x(indxPos) = lsq_step(Aw(:, indxPos), b, weights(indxPos), constrW(indxPos));
+        x = lsq_step(Aw, b, weights, constrW); % old version   
         save(OutFileName, 'x');
     %%
         BestResStat.xOriginal = x;

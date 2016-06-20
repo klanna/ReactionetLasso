@@ -70,14 +70,38 @@ function ReactionetLassoPlots( ModelName, varargin )
     ResScore = zeros(size(stoich, 2), 1);
     ResScore(ReNumList) = xscore;
     
+    indx_k = find(kTrue);
+    
     FileName = sprintf('%s/StabilitySelection_%s', FolderNames.Plots, ModelName);
-    StabilitySelectionPlot( FDRscore, ResScore, '', ScoreFunctionNameList(2:end), FileName, xOptIndx(2:end));
+    StabilitySelectionPlot( FDRscore, '', ScoreFunctionNameList(2:end), FileName, xOptIndx(2:end));
     
     for i = 2:length(ScoreFunctionNameList)
         OptName = ScoreFunctionNameList{i};
         FName = sprintf('%s/%s_%s', FolderNames.Plots, OptName, ModelName);
         PlotScatterCons( kTrue, xOpt(:, i), OptName, FName, pic, PriorGraph.indx);
-        [ indxPos, TPList, FPList, PriorList ] = FDRgraph( xOpt(:, i), kTrue, PriorGraph.indx);
+    
+        indxPos = find(xOpt(:, i));
+
+        PriorListIndx = [PriorGraph.indx];
+        if ~isempty(PriorListIndx)
+            for p = 1:lenght(PriorListIndx)
+                PriorList(p) = find(indxPos == PriorListIndx(p));
+            end
+        else
+            PriorList = [];
+        end
+        
+        FPList = [];
+        FPList0 = setdiff(indxPos, indx_k);
+        for j = 1:length(FPList0)
+            FPList(j) = find(indxPos == FPList0(j));
+        end
+        
+        TPList = [];
+        TPList0 = setdiff(indxPos, FPList0);
+        for j = 1:length(TPList0)
+            TPList(j) = find(indxPos == TPList0(j));
+        end
         
         PrintGraphWithScore( FName, stoich(:, indxPos), SpeciesNames, TPList, FPList, PriorList, ResScore(indxPos) );
         

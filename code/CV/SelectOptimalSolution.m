@@ -15,11 +15,7 @@ function [ indx ] = SelectOptimalSolution( IC, varargin )
             Nindx = 3;
         end
         [~, idx] = sort(dIC);
-        if length(idx) > Nindx
-            indx = idx(1:Nindx) + 1;
-        else
-            [~, indx] = min(IC);
-        end
+        indx = idx(1:Nindx) + 1;
     else
         [~, indx] = min(IC);
     end

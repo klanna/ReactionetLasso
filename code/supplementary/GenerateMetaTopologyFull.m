@@ -54,17 +54,17 @@ function [stoichAll, ReactionNamesAll] = GenerateMetaTopologyFull(SpeciesNames, 
 		[ ReactionNamesAll{l}, stoichAll(:, l)] = GenerateReactionTopologyXY_Z( z, x, y, SpeciesNames, N_sp);
     end
 
-    for i = 1:N_sp
-        for j = 1:N_sp
-            if i ~= j
-                ReactionNamesAll{end+1} = sprintf('%s -> %s', SpeciesNames{i}, SpeciesNames{j});
-                v = zeros(N_sp, 1);
-                v(i) = -1;
-                v(j) = 1;
-                stoichAll(:, end+1) = v;
-            end
-        end
-    end
+%     for i = 1:N_sp
+%         for j = 1:N_sp
+%             if i ~= j
+%                 ReactionNamesAll{end+1} = sprintf('%s -> %s', SpeciesNames{i}, SpeciesNames{j});
+%                 v = zeros(N_sp, 1);
+%                 v(i) = -1;
+%                 v(j) = 1;
+%                 stoichAll(:, end+1) = v;
+%             end
+%         end
+%     end
 
     fprintf('%.3f sec\n', toc(ts));
 end
