@@ -88,7 +88,7 @@ function [xOpt, ScoreFunctionNameList, mse, AIC, BIC, card, RunTimeS, RunTimeSna
                     end
                     
                     if sum(reFlag) > 1
-                        fprintf('Bad reaction (score(%u) = %.2f): %u!!\n', i, UniqueXscore(i), xset(end));
+%                         fprintf('Bad reaction (score(%u) = %.2f): %u!!\n', i, UniqueXscore(i), xset(end));
                         mseJ = mseJold + 10^20;
                     else
                         mseJ = mean(mseJcv);

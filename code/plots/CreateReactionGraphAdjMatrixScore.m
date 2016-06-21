@@ -8,8 +8,14 @@ function [AdjMat, TPMat, FPMat, PMat, NodesProp] = CreateReactionGraphAdjMatrixS
 % TPList
 % FPList
 % PriorList
+    ScalingConst = 4; % defines the width of the line
+    
+    [~, indxRe] = sort(ScoreList, 'descend');
+    
     [N_sp, N_re] = size(stoich);
+    
     AdjMat = zeros(N_sp, N_sp);
+    
     TPMat = AdjMat;
     FPMat = AdjMat;
     PMat = AdjMat;
@@ -57,17 +63,18 @@ function [AdjMat, TPMat, FPMat, PMat, NodesProp] = CreateReactionGraphAdjMatrixS
        
        if FlagReverse
            sp_re = sp_new_list(FlagReverse);
-           SpeciesNames{sp_re} = sprintf('%u,%u', i, re);
+           SpeciesNames{sp_re} = sprintf('%u,%u', find(indxRe == i), find(indxRe == re));
        else
            sp_re = length(SpeciesNames) + 1;
            l = l + 1;
            NodesProp.ReactNodes(l) = sp_re;
-           SpeciesNames{sp_re} = sprintf('%u', re);
+           SpeciesNames{sp_re} = sprintf('%u', find(indxRe == re));
        end
        sp_new_list(re) = sp_re;
        
+       
        if ScoreList(re)
-           sc = 5*ScoreList(re);
+           sc = ScalingConst*ScoreList(re);
        else
            sc = 1;
        end

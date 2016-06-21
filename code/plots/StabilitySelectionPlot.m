@@ -2,7 +2,7 @@ function StabilitySelectionPlot( M, titlename, iBestNames, FileName, iBest)
     fprintf('StabilitySelectionPlot\n');
     PaperFonts
     
-    iBestShapes = {'o', 's', '+'};
+    iBestShapes = {'o', 's', '+', 'o', 's', '+', 'o', 's', '+'};
     
     size1 = 6;
     size2 = size1;
@@ -16,7 +16,7 @@ function StabilitySelectionPlot( M, titlename, iBestNames, FileName, iBest)
     hold on
     NBest = length(iBest);
     for i = 1:NBest
-        plot(M_fp(iBest(i)), M_tp(iBest(i)), iBestShapes{i}, 'color', 'black', 'MarkerSize', MarkerSize, 'LineWidth', lwidth)
+        plot(M_fp(iBest(i)), M_tp(iBest(i)), 'x', 'color',  MyColor(i+1, :), 'MarkerSize', MarkerSize*3, 'LineWidth', lwidth*3)
         hold on
     end
     
@@ -29,6 +29,7 @@ function StabilitySelectionPlot( M, titlename, iBestNames, FileName, iBest)
     axis square
     
     title(titlename)
+%     legend(['Reactionet lasso', iBestNames], 'location', 'southeast', 'FontSize', FSize);
     legend(['Reactionet lasso', iBestNames], 'location', 'southeast', 'FontSize', FSize);
 
     StepX = max(1, round((m2x - m1x)/5));

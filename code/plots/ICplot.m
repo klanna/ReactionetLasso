@@ -12,12 +12,12 @@ function ICplot( card, M, titlename, FileName)
 
     for i = 1:Nsubplots
         subplot(Nsubplots, 1, i)
-        plot(card, M(:, i), 'color', MyColor(1, :), 'MarkerSize', MarkerSize, 'LineWidth', lwidth)
+        plot(card, log(M(:, i)), 'color', MyColor(1, :), 'MarkerSize', MarkerSize, 'LineWidth', lwidth)
         title(titlename{i})
         box on
 %         axis square
         xlabel('cardinality')
-        ylabel('IC')
+        ylabel('log IC')
         SetMyFonts
     end 
     PDFprint(sprintf('%s_%s', FileName, figname),  fig, size1, size2);

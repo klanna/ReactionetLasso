@@ -32,15 +32,15 @@ function z_path = LassoVpathChol(A, b, rho, weights, N_sp, varargin)
 
 %% define lambda_list
     tsld = tic;
-    fprintf('define lambda_list...\n');
+%     fprintf('define lambda_list...\n');
     lambda_max = norm( A'*b.*weights, 'inf' );
     lambda_max_log = ceil(log(lambda_max)); %         lambda_max_log = ceil(log2(lambda_max));
     lambda_list = sort(exp(-10:lambda_max_log), 'descend');%         
 %     lambda_list = sort(2.^[-10:lambda_max_log], 'descend');    
     lambda_list(find(lambda_list > lambda_max)) = [];
     N_lambda = length(lambda_list);
-    fprintf('N_lambda = %u\nlambda_max = %e (e ^ %.0f)\n', N_lambda, lambda_max, lambda_max_log);%         fprintf('lambda_max = %e (2 ^ %.0f)\n', lambda_max, lambda_max_log);
-    fprintf('Found max_lambda in %.3f sec\n', toc(tsld));
+%     fprintf('N_lambda = %u\nlambda_max = %e (e ^ %.0f)\n', N_lambda, lambda_max, lambda_max_log);%         fprintf('lambda_max = %e (2 ^ %.0f)\n', lambda_max, lambda_max_log);
+%     fprintf('Found max_lambda in %.3f sec\n', toc(tsld));
     
 %% ADMM solver
     fprintf('Lasso_chol started...\n');
@@ -63,7 +63,7 @@ function z_path = LassoVpathChol(A, b, rho, weights, N_sp, varargin)
         status = 'Unsolved';
         lambda = lambda_list(lambda_i) ./ weights;
         lambda(find(LeftBorder)) = 0;
-        fprintf('lambda = e ^ (%.0f)\n', log(lambda_list(lambda_i)));
+%         fprintf('lambda = e ^ (%.0f)\n', log(lambda_list(lambda_i)));
         
         for k = 1:MAX_ITER
             % x-update
@@ -120,8 +120,8 @@ function z_path = LassoVpathChol(A, b, rho, weights, N_sp, varargin)
         z_path(lambda_l).l1 = sum( z ./ weights );  
         z_path(lambda_l).rss = 0.5 * sum((b - A*z).^2);
 
-        fprintf('%s: %u iter (%.2f sec)\n', z_path(lambda_l).status, z_path(lambda_l).iter, z_path(lambda_l).time);
-        fprintf('l1 = %.2e, RSS = %.2e\n',  z_path(lambda_l).l1, z_path(lambda_l).rss);    
+%         fprintf('%s: %u iter (%.2f sec)\n', z_path(lambda_l).status, z_path(lambda_l).iter, z_path(lambda_l).time);
+%         fprintf('l1 = %.2e, RSS = %.2e\n',  z_path(lambda_l).l1, z_path(lambda_l).rss);    
     end
     
     fprintf('Lasso_LSQR finished in \t');

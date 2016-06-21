@@ -1,5 +1,5 @@
-function ReactionetLassoPlots( ModelName, varargin )
-% Main procedure
+function ReactionetLassoPlots( PlotType, ModelName, varargin )
+% Main procedure PlotType = 'CV' | 'all' | 'FDR'
     ts = tic; % start time
     fpath = regexprep(pwd, 'ReactionetLasso/.*', 'ReactionetLasso/'); % path to the code-folder
     addpath(genpath(sprintf('%s/code/', fpath))); % add code directory to matlab path
@@ -11,6 +11,7 @@ function ReactionetLassoPlots( ModelName, varargin )
     A = {};
     titlename{1} = 'Cross Validation';
     LegendNames{1} = {};
+    
     for nset = 1:Ncv
         FolderNames = FolderNamesFun( ModelName, nset, ModelParams );
 
@@ -23,23 +24,24 @@ function ReactionetLassoPlots( ModelName, varargin )
         N_sp = length(SpeciesNames);
         kTrue = AnnotateTrueReactions( k, stoichTR, stoich );
 
-        StepName = 'BoostFeatureSelecion';
-        FName = sprintf('%s/%s', FolderNames.ResultsCV, StepName);
-        load(sprintf('%s.mat', FName));    
-        xb = mean(sign(xboost), 2);
-        PlotScatterCons( sign(kTrue), xb, StepName, sprintf('%s/%s', FolderNames.PlotsCV, StepName), pic);
-        
-        StepName = 'StepOLS';
-        FName = sprintf('%s/%s', FolderNames.ResultsCV, StepName);
-        load(sprintf('%s.mat', FName));    
-        PlotScatterCons( kTrue, BestResStat.xOriginal, StepName, sprintf('%s/%s', FolderNames.PlotsCV, StepName), pic);
-        PlotFitToLinearSystem( FolderNames.NMom, b, BestResStat.b_hat, N_T, N_sp, sprintf('%s/%s', FolderNames.PlotsCV, StepName), pic);
-        
-        StepName = 'StepFG';
-        FName = sprintf('%s/%s', FolderNames.ResultsCV, StepName);
-        load(sprintf('%s.mat', FName));    
-        PlotScatterCons( kTrue, BestResStat.xOriginal, StepName, sprintf('%s/%s', FolderNames.PlotsCV, StepName), pic);
-        PlotFitToLinearSystem( FolderNames.NMom, b, BestResStat.b_hat, N_T, N_sp, sprintf('%s/%s', FolderNames.PlotsCV, StepName), pic);
+%         StepName = 'BoostFeatureSelecion';
+%         FName = sprintf('%s/%s', FolderNames.ResultsCV, StepName);
+%         load(sprintf('%s.mat', FName));    
+%         xb = mean(sign(xboost), 2);
+%         PlotScatterCons( sign(kTrue), xb, StepName, sprintf('%s/%s', FolderNames.PlotsCV, StepName), pic);
+        if strcmp(PlotType, 'all')
+            StepName = 'StepOLS';
+            FName = sprintf('%s/%s', FolderNames.ResultsCV, StepName);
+            load(sprintf('%s.mat', FName));    
+            PlotScatterCons( kTrue, BestResStat.xOriginal, StepName, sprintf('%s/%s', FolderNames.PlotsCV, StepName), pic);
+            PlotFitToLinearSystem( FolderNames.NMom, b, BestResStat.b_hat, N_T, N_sp, sprintf('%s/%s', FolderNames.PlotsCV, StepName), pic);
+
+            StepName = 'StepFG';
+            FName = sprintf('%s/%s', FolderNames.ResultsCV, StepName);
+            load(sprintf('%s.mat', FName));    
+            PlotScatterCons( kTrue, BestResStat.xOriginal, StepName, sprintf('%s/%s', FolderNames.PlotsCV, StepName), pic);
+            PlotFitToLinearSystem( FolderNames.NMom, b, BestResStat.b_hat, N_T, N_sp, sprintf('%s/%s', FolderNames.PlotsCV, StepName), pic);
+        end
         
         StepName = 'StepLASSO';
         FName = sprintf('%s/%s', FolderNames.ResultsCV, StepName);
@@ -73,7 +75,7 @@ function ReactionetLassoPlots( ModelName, varargin )
     indx_k = find(kTrue);
     
     FileName = sprintf('%s/StabilitySelection_%s', FolderNames.Plots, ModelName);
-    StabilitySelectionPlot( FDRscore, '', ScoreFunctionNameList(2:end), FileName, xOptIndx(2:end));
+    StabilitySelectionPlot( FDRscore, '', ScoreFunctionNameList(2:end), FileName, xOptIndx);
     
     for i = 2:length(ScoreFunctionNameList)
         OptName = ScoreFunctionNameList{i};

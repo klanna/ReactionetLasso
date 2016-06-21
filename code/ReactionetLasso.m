@@ -13,7 +13,7 @@ function ReactionetLasso( ModelName, nset, varargin )
     
     ReactionetLassoFile = sprintf('%s/Step_LASSO.mat', FolderNames.ResultsCV);
     
-%     if ~exist(ReactionetLassoFile, 'file')
+    if ~exist(ReactionetLassoFile, 'file')
         load(sprintf('%s/Data.mat', FolderNames.Data), 'Timepoints', 'SpeciesNames')
         
         [stoich, RunTimeS(end+1), RunTimeSname{end+1} ] = PrepareTopology( FolderNames );        
@@ -44,7 +44,7 @@ function ReactionetLasso( ModelName, nset, varargin )
         [StatLassoLL, RunTimeS(end+1), RunTimeSname{end+1}] = StepLASSO( FolderNames, indx_I, indx_J, valuesNoiseNorm, N_obs, N_re, N_sp, bNoiseNorm, bStdEps, constr, BestResStat, PriorGraph.indx);
         
         PlotComputationTime( FolderNames.ResultsCV, ModelName, RunTimeS, RunTimeSname);
-%     end
+    end
     FormatTime( toc(ts), 'Total RunTime: ' );
 end
 

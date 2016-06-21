@@ -1,5 +1,5 @@
 FSize = 12;
-FSize = 6;
+% FSize = 6;
 lwidth = 1;
 MarkerSize = 1;
 MyColor = [228,26,28;

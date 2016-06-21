@@ -15,10 +15,12 @@ function ReactionetLassoSS( ModelName, varargin )
     PlotComputationTime( FolderNames.Results, ModelName, RunTimeS, RunTimeSname);
     
     M = [VertVect(mse) VertVect(AIC) VertVect(BIC)];
+    
     ICplot( card, M, {'mse', 'AIC', 'BIC'}, FileNameOut);
     
     load(sprintf('%s/Topology.mat', FolderNames.Data));
     load(sprintf('%s/Data.mat', FolderNames.Data), 'SpeciesNames');
+    
     [~, PriorGraph] = ReadConstraints( FolderNames, size(stoich, 2) );
     
     ResScore = zeros(size(stoich, 2), 1);
@@ -43,7 +45,7 @@ function ReactionetLassoSS( ModelName, varargin )
     end
 
     if exist(sprintf('%s/TrueStruct.mat', FolderNames.Data), 'file')
-		ReactionetLassoPlots( ModelName, varargin );
+		ReactionetLassoPlots( 'all', ModelName, varargin );
     end
 end
 
