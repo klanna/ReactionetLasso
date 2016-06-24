@@ -52,15 +52,19 @@ function [stoichAll, ReactionNamesAll] = GenerateMetaTopology(SpeciesNames, vara
 		[ ReactionNamesAll{l}, stoichAll(:, l)] = GenerateReactionTopologyX_YZ( z, x, y, SpeciesNames, N_sp);
 		l = l+1;
 		[ ReactionNamesAll{l}, stoichAll(:, l)] = GenerateReactionTopologyXY_Z( z, x, y, SpeciesNames, N_sp);
-    end
-    
-    for i = 1:N_sp
-        for j = 1:N_sp
-            if i ~= j
-                l = l+1;
-                [ ReactionNamesAll{l}, stoichAll(:, l)] = GenerateReactionTopologyX_Y( i, j, SpeciesNames, N_sp);
-            end
-        end
+        
+        l = l+1;
+		[ ReactionNamesAll{l}, stoichAll(:, l)] = GenerateReactionTopologyX_Y( x, y, SpeciesNames, N_sp);
+        l = l+1;
+		[ ReactionNamesAll{l}, stoichAll(:, l)] = GenerateReactionTopologyX_Y( y, x, SpeciesNames, N_sp);
+        l = l+1;
+		[ ReactionNamesAll{l}, stoichAll(:, l)] = GenerateReactionTopologyX_Y( x, z, SpeciesNames, N_sp);
+        l = l+1;
+		[ ReactionNamesAll{l}, stoichAll(:, l)] = GenerateReactionTopologyX_Y( z, x, SpeciesNames, N_sp);
+        l = l+1;
+		[ ReactionNamesAll{l}, stoichAll(:, l)] = GenerateReactionTopologyX_Y( z, y, SpeciesNames, N_sp);
+        l = l+1;
+		[ ReactionNamesAll{l}, stoichAll(:, l)] = GenerateReactionTopologyX_Y( y, z, SpeciesNames, N_sp);
     end
     fprintf('%.3f sec\n', toc(ts));
 end

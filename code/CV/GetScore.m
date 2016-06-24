@@ -5,7 +5,7 @@ function [xscore, ReNumList] = GetScore( FolderNames, ModelParams )
     FileNameOut = sprintf('%s/ReactionFrequency.mat', FolderNames.Results);
     if ~exist(FileNameOut, 'file')
         Ncv = 5;
-        load(sprintf('%s/Topology.mat', FolderNames.Data));
+        load(sprintf('%s/%s.mat', FolderNames.Data, FolderNames.PriorTopology));
 
         N_re = size(stoich, 2);
 

@@ -18,7 +18,7 @@ function ReactionetLassoSS( ModelName, varargin )
     
     ICplot( card, M, {'mse', 'AIC', 'BIC'}, FileNameOut);
     
-    load(sprintf('%s/Topology.mat', FolderNames.Data));
+    load(sprintf('%s/%s.mat', FolderNames.Data, FolderNames.PriorTopology));
     load(sprintf('%s/Data.mat', FolderNames.Data), 'SpeciesNames');
     
     [~, PriorGraph] = ReadConstraints( FolderNames, size(stoich, 2) );

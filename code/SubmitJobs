@@ -1,3 +1,52 @@
+nohup ./ReactionetLasso.py -m MisSpTIA6b5bn100kUT30sp33tp -p 0.05 -o 2 -g splines  &
+
+nohup ./ReactionetLasso.py -m MisSpTIA6b5bn100kUT30sp33tp -p 0.05 -o 2 -g splines -t PriorTopology1 &
+nohup ./ReactionetLasso.py -m MisSpTIA6b5bn100kUT30sp33tp -p 0.05 -o 2 -g splines  &
+
+
+nohup ./ReactionetLasso.py -m MisSpARS1rep5bn100kDT7sp14tp -p 0.05 -o 2 -g splines -t PriorTopology1 &
+nohup ./ReactionetLasso.py -m MisSpARS2rep5bn100kDT7sp14tp -p 0.05 -o 2 -g splines -t PriorTopology1 &
+nohup ./ReactionetLasso.py -m MisSpARS3rep5bn100kDT7sp14tp -p 0.05 -o 2 -g splines -t PriorTopology1 &
+nohup ./ReactionetLasso.py -m MisSpARS4rep5bn100kDT7sp14tp -p 0.05 -o 2 -g splines -t PriorTopology1 &
+nohup ./ReactionetLasso.py -m MisSpARS5rep5bn100kDT7sp14tp -p 0.05 -o 2 -g splines -t PriorTopology1 &
+
+nohup ./ReactionetLasso.py -m MisSpARS2rep5bn100kDT7sp14tp -p 0.05 -o 2 -g splines  &
+nohup ./ReactionetLasso.py -m MisSpARS2rep5bn100kDT7sp14tp -p 0.05 -o 2 -g splines -t PriorTopology2 &
+nohup ./ReactionetLasso.py -m MisSpARS3rep5bn100kDT7sp14tp -p 0.05 -o 2 -g splines -t PriorTopology2 &
+nohup ./ReactionetLasso.py -m MisSpARS4rep5bn100kDT7sp14tp -p 0.05 -o 2 -g splines -t PriorTopology2 &
+nohup ./ReactionetLasso.py -m MisSpARS5rep5bn100kDT7sp14tp -p 0.05 -o 2 -g splines -t PriorTopology2 &
+
+========================================================================
+nohup ./ReactionetLasso.py -m MisSpARS5bn100kDT7sp15tp -p 0.05 -o 2 -g splines -t PriorTopology1 &
+nohup ./ReactionetLasso.py -m MisSpARS5bn100kDT7sp15tp -p 0.05 -o 2 -g splines -t PriorTopology2 &
+
+nohup ./ReactionetLasso.py -m MisSpARS100kDT7sp15tp -p 0 -o 2 -g splines &
+
+
+nohup ./ReactionetLasso.py -m ARS5bn100kDT14sp15tp -p 0.05 -o 2 -g splines &
+nohup ./ReactionetLasso.py -m ARS1rep100kDT14sp14tp -p 0 -o 2 -g splines &
+nohup ./ReactionetLasso.py -m ARS1rep5bn100kDT14sp14tp -p 0.05 -o 2 -g splines &
+
+
+nohup ./ReactionetLasso.py -m MisSpARS2rep5bn100kDT14sp14tp -p 0.05 -o 2 -g splines &
+
+nohup ./ReactionetLasso.py -m ARS2rep5bn100kDT14sp15tp -p 0.05 -o 2 -g splines &
+nohup ./ReactionetLasso.py -m ARS3rep5bn100kDT14sp15tp -p 0.05 -o 2 -g splines &
+nohup ./ReactionetLasso.py -m ARS4rep5bn100kDT14sp15tp -p 0.05 -o 2 -g splines &
+nohup ./ReactionetLasso.py -m ARS5rep5bn100kDT14sp15tp -p 0.05 -o 2 -g splines &
+
+nohup ./ReactionetLasso.py -m MisSpTIA6b5bn100kUT30sp33tp -p 0.05 -o 2 -g splines -t PriorTopology1 &
+nohup ./ReactionetLasso.py -m MisSpTIA6b5bn100kUT30sp33tp -p 0.05 -o 2 -g splines -t PriorTopology2 &
+nohup ./ReactionetLasso.py -m MisSpTIA6b5bn100kUT30sp33tp -p 0.05 -o 2 -g splines &
+
+
+nohup ./ReactionetLasso.py -m ARS5rep5bn100kDT14sp15tp -p 0 -o 2 -g splines &
+
+
+
+
+nohup ./PrepareMomentCluster.py -m TIA6b5bn100kUT58sp33tp -p 0 -o 2 -g splines &
+
 nohup ./ReactionetLasso.py -m ES100kDT4sp15tp -o 2 -g splines &
 
 nohup ./ReactionetLasso.py -m MisARS100kDT14sp15tp -o 2 -g splines &
@@ -15,11 +64,11 @@ nohup ./ReactionetLasso.py -m ARS100kDT14sp15tp -p 1 -o 2 -g splines &
 
 nohup ./ReactionetLasso.py -m ARS100kDT14sp15tp -p 1 -o 2 -g splines -a PriorGraph_0 &
 
-nohup ./ReactionetLasso.py -m ARS1rep100kDT14sp15tp -p 1 -o 2 -g splines &
-nohup ./ReactionetLasso.py -m ARS2rep100kDT14sp15tp -p 1 -o 2 -g splines &
-nohup ./ReactionetLasso.py -m ARS3rep100kDT14sp15tp -p 1 -o 2 -g splines &
-nohup ./ReactionetLasso.py -m ARS4rep100kDT14sp15tp -p 1 -o 2 -g splines &
-nohup ./ReactionetLasso.py -m ARS5rep100kDT14sp15tp -p 1 -o 2 -g splines &
+nohup ./ReactionetLasso.py -m ARS1rep100kDT14sp15tp -p 0 -o 2 -g splines &
+nohup ./ReactionetLasso.py -m ARS2rep100kDT14sp15tp -p 0 -o 2 -g splines &
+nohup ./ReactionetLasso.py -m ARS3rep100kDT14sp15tp -p 0 -o 2 -g splines &
+nohup ./ReactionetLasso.py -m ARS4rep100kDT14sp15tp -p 0 -o 2 -g splines &
+nohup ./ReactionetLasso.py -m ARS5rep100kDT14sp15tp -p 0 -o 2 -g splines &
 
 
 nohup ./ReactionetLasso.py -m ES100kDT4sp15tp -p 0 -o 2 -g splines &
@@ -29,7 +78,7 @@ nohup ./ReactionetLasso.py -m ARS100kDT14sp15tp -p 0 -o 2 -g splines -a PriorGra
 
 
 nohup ./ReactionetLasso.py -m TIA6b100kUT58sp17tp -p 0 -o 2 -g splines &
-nohup ./PrepareMomentCluster.py -m TIA6b100kUT58sp17tp -p 0 -o 2 -g splines &
+
 
 nohup ./ReactionetLasso.py -m MisARS5bn100kDT14sp15tp -p 0.05 -o 2 -g splines  &
 nohup ./ReactionetLasso.py -m MisARS100kDT14sp15tp -p 0 -o 2 -g splines  &

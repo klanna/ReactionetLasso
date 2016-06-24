@@ -9,6 +9,7 @@ function ModelParams = ReadInputParameters( varargin )
     ModelParams.NMom = 2;
     ModelParams.Nboot = 100;
     ModelParams.Prior = '';
+    ModelParams.PriorTopology = 'Topology';
     ModelParams.p = 1;
     
     if ~isempty(varargin)
@@ -36,7 +37,11 @@ function ModelParams = ReadInputParameters( varargin )
                     if isequal(tmp, 'FDS') || isequal(tmp, 'splines') || isequal(tmp, 'smooth')
                         ModelParams.Gradients = tmp;
                     else
-                        ModelParams.Prior = tmp;
+                        if regexp(tmp, 'Topology')
+                            ModelParams.PriorTopology = tmp;
+                        else
+                            ModelParams.Prior = tmp;
+                        end
                     end
             end
             clear tmp
@@ -45,7 +50,9 @@ function ModelParams = ReadInputParameters( varargin )
     
     fprintf('Gradients = %s\n', ModelParams.Gradients);
     fprintf('NMom = %u\n', ModelParams.NMom);
-    fprintf('Prior = %s\n', ModelParams.Prior);
+    
+    fprintf('Prior (topology) = %s\n', ModelParams.PriorTopology);
+    fprintf('Prior (reactions) = %s\n', ModelParams.Prior);
     fprintf('p = %.2f\n', ModelParams.p);
 end
 

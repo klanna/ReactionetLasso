@@ -19,6 +19,7 @@ def ReadInputParameters():
 	parser.add_option('-p', '--p', dest='p', help='0.05', type=float)
 	parser.add_option('-d', '--DefaultPath', dest='DefaultPath', default = '../../../../scratch/klanna/ReactionetLasso/')
 	parser.add_option('-a', '--PriorGraph', dest='PriorGraph', default = '')
+	parser.add_option('-t', '--PriorTopology', dest='PriorTopology', default = 'Topology')
 
 	(options, args) = parser.parse_args()
 	return options
@@ -63,10 +64,10 @@ class NamesClass(object):
 		else:
 			self.SysName = '{0}_{1}{2:d}_Boot{3:d}_p{4:d}'.format(options.ModelName, options.GradientType, options.NMom, options.Nboot, int(options.p*100))
 
-		self.JobsOutput = '../JOBS/{0}{1}'.format(self.SysName, options.PriorGraph)	    
+		self.JobsOutput = '../JOBS/{0}{1}_{2}'.format(self.SysName, options.PriorTopology, options.PriorGraph)	    
 		self.Moments = 'Moments/{0}/CV_{1:d}/'.format(options.ModelName, cv)
-		self.ResultsCV = 'resultsCV/{0}/CV_{1:d}/{2}/StepLASSO.mat'.format(self.SysName, cv, options.PriorGraph)
-		self.Results = 'results/{0}/{1}/StabilitySelection.mat'.format(self.SysName, options.PriorGraph)
-		self.Mem = 2*1028
+		self.ResultsCV = 'resultsCV/{0}/CV_{1:d}/{2}_{3}/StepLASSO.mat'.format(self.SysName, cv, options.PriorTopology, options.PriorGraph)
+		self.Results = 'results/{0}/{1}_{2}/StabilitySelection.mat'.format(self.SysName, options.PriorTopology, options.PriorGraph)
+		self.Mem = 6*1028
 		self.Time = 4
 		

@@ -1,4 +1,4 @@
-function [stoichAll, ReactionNamesAll] = GenerateMetaTopology(SpeciesNames, varargin)
+function [stoichAll, ReactionNamesAll] = GenerateMetaTopologyFromGraph(SpeciesNames, varargin)
 % CompartmentList - list indicating in which compartment is the specie
 % BorderCompartment should have 0 value
     ts = tic;
@@ -6,25 +6,16 @@ function [stoichAll, ReactionNamesAll] = GenerateMetaTopology(SpeciesNames, vara
     N_sp = length(SpeciesNames);
     
     if ~isempty(varargin)
-        CompartmentList = varargin{1};
+        G = varargin{1};
     else
-        CompartmentList = ones(N_sp, 1);
+        G = triu(ones(N_sp, N_sp));
     end
-	
-    CompartNames = sort(unique(CompartmentList));
+    
     xyzCombinations = [];
-    
-    BorderCompartment = find(CompartNames == 0);
-    if ~isempty(BorderCompartment)
-        IndxBorderCompartment  = VertVect(find(CompartmentList == CompartNames(BorderCompartment)));
-        CompartNames(BorderCompartment) = [];
-    else
-        IndxBorderCompartment = [];
-    end    
-    
-    for i = 1:length(CompartNames)
-        CompartIndx = [VertVect(find(CompartmentList == CompartNames(i))); IndxBorderCompartment];
-        xyzCombinations = [xyzCombinations; combnk(CompartIndx, 3)];
+    for i = 1:N_sp
+        SpConnection = G(i, :);
+        idxSpConnection = find(SpConnection);
+        xyzCombinations = [xyzCombinations; combnk(idxSpConnection, 3)];
     end
         
     Nxyz = size(xyzCombinations, 1);
@@ -56,12 +47,13 @@ function [stoichAll, ReactionNamesAll] = GenerateMetaTopology(SpeciesNames, vara
     
     for i = 1:N_sp
         for j = 1:N_sp
-            if i ~= j
+            if (i ~= j) && (G(i, j) || G(j, i))
                 l = l+1;
                 [ ReactionNamesAll{l}, stoichAll(:, l)] = GenerateReactionTopologyX_Y( i, j, SpeciesNames, N_sp);
             end
         end
     end
+    
     fprintf('%.3f sec\n', toc(ts));
 end
 
@@ -92,6 +84,7 @@ function [ ReactName, StoichVector] = GenerateReactionTopologyX_Y( x, y, Species
     StoichVector(y) = 1;
     ReactName = GeneratereactionName( SpeciesNames, StoichVector );
 end
+
 
 function [ ReactName ] = GeneratereactionName( SpeciesNames, stoich )
     f_in = '->';

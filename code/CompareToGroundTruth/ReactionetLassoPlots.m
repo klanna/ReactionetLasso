@@ -1,4 +1,4 @@
-function ReactionetLassoPlots( PlotType, ModelName, varargin )
+function FDRscore = ReactionetLassoPlots( PlotType, ModelName, varargin )
 % Main procedure PlotType = 'CV' | 'all' | 'FDR'
     ts = tic; % start time
     fpath = regexprep(pwd, 'ReactionetLasso/.*', 'ReactionetLasso/'); % path to the code-folder
@@ -15,7 +15,7 @@ function ReactionetLassoPlots( PlotType, ModelName, varargin )
     for nset = 1:Ncv
         FolderNames = FolderNamesFun( ModelName, nset, ModelParams );
 
-        load(sprintf('%s/Topology.mat', FolderNames.Data))
+        load(sprintf('%s/%s.mat', FolderNames.Data, FolderNames.PriorTopology))
         load(sprintf('%s/TrueStruct.mat', FolderNames.Data))
         load(sprintf('%s/Data.mat', FolderNames.Data), 'Timepoints', 'SpeciesNames')
         load(sprintf('%s/Response.mat', FolderNames.LinSystem))
@@ -74,40 +74,44 @@ function ReactionetLassoPlots( PlotType, ModelName, varargin )
     
     indx_k = find(kTrue);
     
+    save(sprintf('%s/StabilitySelection.mat', FolderNames.Results), '-append', 'FDRscore')
+    
     FileName = sprintf('%s/StabilitySelection_%s', FolderNames.Plots, ModelName);
-    StabilitySelectionPlot( FDRscore, '', ScoreFunctionNameList(2:end), FileName, xOptIndx);
+    StabilitySelectionPlot( FDRscore, '', ScoreFunctionNameList, FileName, xOptIndx);
     
-    for i = 2:length(ScoreFunctionNameList)
-        OptName = ScoreFunctionNameList{i};
-        FName = sprintf('%s/%s_%s', FolderNames.Plots, OptName, ModelName);
-        PlotScatterCons( kTrue, xOpt(:, i), OptName, FName, pic, PriorGraph.indx);
-    
-        indxPos = find(xOpt(:, i));
+    if strcmp(PlotType, 'all')
+        for i = 1:length(ScoreFunctionNameList)
+            OptName = ScoreFunctionNameList{i};
+            FName = sprintf('%s/%s_%s', FolderNames.Plots, OptName, ModelName);
+            PlotScatterCons( kTrue, xOpt(:, i), OptName, FName, pic, PriorGraph.indx);
 
-        PriorListIndx = [PriorGraph.indx];
-        if ~isempty(PriorListIndx)
-            for p = 1:lenght(PriorListIndx)
-                PriorList(p) = find(indxPos == PriorListIndx(p));
+            indxPos = find(xOpt(:, i));
+
+            PriorListIndx = [PriorGraph.indx];
+            if ~isempty(PriorListIndx)
+                for p = 1:lenght(PriorListIndx)
+                    PriorList(p) = find(indxPos == PriorListIndx(p));
+                end
+            else
+                PriorList = [];
             end
-        else
-            PriorList = [];
+
+            FPList = [];
+            FPList0 = setdiff(indxPos, indx_k);
+            for j = 1:length(FPList0)
+                FPList(j) = find(indxPos == FPList0(j));
+            end
+
+            TPList = [];
+            TPList0 = setdiff(indxPos, FPList0);
+            for j = 1:length(TPList0)
+                TPList(j) = find(indxPos == TPList0(j));
+            end
+
+            PrintGraphWithScore( FName, stoich(:, indxPos), SpeciesNames, TPList, FPList, PriorList, ResScore(indxPos) );
+
+            clear FPList TPList PriorList
         end
-        
-        FPList = [];
-        FPList0 = setdiff(indxPos, indx_k);
-        for j = 1:length(FPList0)
-            FPList(j) = find(indxPos == FPList0(j));
-        end
-        
-        TPList = [];
-        TPList0 = setdiff(indxPos, FPList0);
-        for j = 1:length(TPList0)
-            TPList(j) = find(indxPos == TPList0(j));
-        end
-        
-        PrintGraphWithScore( FName, stoich(:, indxPos), SpeciesNames, TPList, FPList, PriorList, ResScore(indxPos) );
-        
-        clear FPList TPList PriorList
     end
 end
 

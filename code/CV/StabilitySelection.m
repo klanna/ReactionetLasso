@@ -2,7 +2,7 @@ function [xOpt, ScoreFunctionNameList, mse, AIC, BIC, card, RunTimeS, RunTimeSna
     FileNameOut = sprintf('%s/StabilitySelection.mat', FolderNames.Results);
     if ~exist(FileNameOut, 'file')
         ts = tic;
-        load(sprintf('%s/Topology.mat', FolderNames.Data));
+        load(sprintf('%s/%s.mat', FolderNames.Data, FolderNames.PriorTopology));
         load(sprintf('%s/Data.mat', FolderNames.Data), 'Timepoints', 'SpeciesNames')
         N_re = size(stoich, 2);
         [constr, PriorGraph] = ReadConstraints( FolderNames, N_re );
