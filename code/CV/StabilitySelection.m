@@ -1,11 +1,11 @@
 function [xOpt, ScoreFunctionNameList, mse, AIC, BIC, card, RunTimeS, RunTimeSname] = StabilitySelection( FolderNames, ModelParams, ReNumList, xscore)
     FileNameOut = sprintf('%s/StabilitySelection.mat', FolderNames.Results);
-    if ~exist(FileNameOut, 'file')
+%     if ~exist(FileNameOut, 'file')
         ts = tic;
         load(sprintf('%s/%s.mat', FolderNames.Data, FolderNames.PriorTopology));
         load(sprintf('%s/Data.mat', FolderNames.Data), 'Timepoints', 'SpeciesNames')
         N_re = size(stoich, 2);
-        [constr, PriorGraph] = ReadConstraints( FolderNames, N_re );
+        [constr, PriorGraph] = ReadConstraints( FolderNames, stoich );
         Ncv = 5;
         for cv = 1:Ncv
             FolderNamesCV = FolderNamesFun( FolderNames.ModelName, cv, ModelParams );
@@ -49,8 +49,8 @@ function [xOpt, ScoreFunctionNameList, mse, AIC, BIC, card, RunTimeS, RunTimeSna
         NreUni = length(UniqueXscore);
         
         ReNumListCorrected = PriorGraph.indx; % take in account prior knowledge about reactions
-        mseXscore(1:length(ReNumListCorrected)) = 0;
-        card = 1:length(ReNumListCorrected);
+        mseXscore = [];
+        card = [];
         Npr = length(ReNumListCorrected);
         prSet = 1:Npr;
 
@@ -118,7 +118,7 @@ function [xOpt, ScoreFunctionNameList, mse, AIC, BIC, card, RunTimeS, RunTimeSna
         AIC = length(b)*log(mseXscore) + 2*card;
         mse = mseXscore;
         
-        ICList = {'BIC', 'AIC'};
+        ICList = {'mse', 'BIC', 'AIC'};
 
         l = 0;
         for i = 1:length(ICList)
@@ -129,7 +129,41 @@ function [xOpt, ScoreFunctionNameList, mse, AIC, BIC, card, RunTimeS, RunTimeSna
                 ScoreFunctionNameList{l} = sprintf('%s_%u', ICList{i}, j);
                 fprintf('%s optimal: \t', ScoreFunctionNameList{l});
                 xOptIndx(l) = indx(j);
-                xOpt(:, l) = x(:, indx(j));
+                xOptimal = x(:, indx(j));
+                if strcmp(FolderNames.connect, 'connected') 
+                    [ ~, f, ReNotConnected ] = CheckConnected( stoich, xOptimal );
+                    while ~f
+                        % select only one non-connected reaction
+                        clear mseJre xCVm
+                        for jj = 1:length(ReNotConnected)
+                            xset = find(xOptimal);
+                            xset(end+1) = ReNotConnected(jj); % add one element
+                            % find solution on a given set of reactions
+                            xCV = zeros(length(xset), Ncv);
+                            for cv = 1:Ncv
+                                Aw = AwCV{cv};
+                                b = bCV{cv};
+                                Aval = AvalCV{cv};
+                                bval = bvalCV{cv};
+%                                 constrW0(xset) = 1e-10 .* weights(xset);
+                                constrW = constrWCV{cv};
+                                constrW(xset) = max(constrW(xset), 1e-10);
+                                weights = weightsCV{cv};
+
+                                xCV(:, cv) = (constrW(xset) + lsqnonneg(Aw(:, xset), b - Aw(:, xset)*constrW(xset)) ./ weights(xset));
+                                mseJcv(cv) = sum(((bval - Aval(:, xset)*xCV(:, cv))).^2);
+                            end
+                            xCVm(:, jj) = mean(xCV, 2);
+                            mseJre(jj) = mean(mseJcv);
+                        end
+                        [~, ReToAdd] = min(mseJre);
+                        xset = find(xOptimal);
+                        xset(end+1) = ReNotConnected(ReToAdd);
+                        xOptimal(xset) = xCVm(:, ReToAdd);
+                        [ ~, f, ReNotConnected ] = CheckConnected( stoich, xOptimal );
+                    end
+                end
+                xOpt(:, l) = xOptimal;
             end
         end
         
@@ -138,9 +172,9 @@ function [xOpt, ScoreFunctionNameList, mse, AIC, BIC, card, RunTimeS, RunTimeSna
         RunTimeSname{end+1} = 'StabilitySelection';
         
         save(FileNameOut, 'x', 'mse', 'AIC', 'BIC', 'ScoreFunctionNameList', 'xOpt', 'xOptIndx', 'RunTimeS', 'RunTimeSname', 'card')
-    else
-        load(FileNameOut)
-    end
+%     else
+%         load(FileNameOut)
+%     end
 end
 
 function [xOpt, imin] = OptimalSolution(x, ScoreFunction)  

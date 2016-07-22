@@ -51,6 +51,15 @@ function FDRscore = ReactionetLassoPlots( PlotType, ModelName, varargin )
         end
         AA{nset} = FDRscore;
         clear FDRscore
+        
+%         StepName = 'StepBackwardElimination';
+%         FName = sprintf('%s/%s', FolderNames.ResultsCV, StepName);
+%         load(sprintf('%s.mat', FName));    
+%         for i = 1:length([StatLassoLL])
+%             FDRscoreBE(i, :) = FDR(kTrue, StatLassoLL(i).xOriginal);
+%         end
+%         BE{nset} = FDRscoreBE;
+%         clear FDRscore
     end
     A{1} = AA;
 %     
@@ -63,6 +72,10 @@ function FDRscore = ReactionetLassoPlots( PlotType, ModelName, varargin )
     A{2} = {FDRscore};
     titlename{2} = 'Stability Selection';
     LegendNames{2} = {};
+    
+%     A{3} = BE;
+%     titlename{3} = 'BE';
+%     LegendNames{3} = {};
     
     FileName = sprintf('%s/CVandStabilitySelection', FolderNames.Plots);
     CompareTrueFalsePos( A, titlename, LegendNames, FileName);

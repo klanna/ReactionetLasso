@@ -1,4 +1,4 @@
-function [xscore, ReNumList] = GetScore( FolderNames, ModelParams )
+function [xscore, ReNumList] = GetScoreSS( FolderNames, ModelParams )
     if ~exist(FolderNames.Results, 'dir')
         mkdir(FolderNames.Results)
     end
@@ -13,22 +13,8 @@ function [xscore, ReNumList] = GetScore( FolderNames, ModelParams )
 
         for cv = 1:Ncv
             FolderNamesCV = FolderNamesFun( FolderNames.ModelName, cv, ModelParams );
-            load(sprintf('%s/StepLASSO.mat', FolderNamesCV.ResultsCV));
-
-            indxPosOld = [];
-
-            TotalLam = 0;
-            for i = 1:length(StatLassoLL)
-                x_hat = StatLassoLL(i).xOriginal;
-                indxPos = find(x_hat);
-                if ~isequal(indxPos, indxPosOld)
-                    TotalLam = TotalLam + 1;
-                    ReactionFrequency(indxPos, cv) = ReactionFrequency(indxPos, cv) + 1;
-                end
-                indxPosOld = indxPos;
-            end
-
-            ReactionFrequency(:, cv) = ReactionFrequency(:, cv) / TotalLam;
+            load(sprintf('%s/StepStabilitySelection.mat', FolderNamesCV.ResultsCV));
+            ReactionFrequency(:, cv) = mean(FreqX, 2);
         end
         
         ReactionFrequencyTotal = mean(ReactionFrequency, 2)*Ncv;

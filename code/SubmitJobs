@@ -1,7 +1,64 @@
+nohup ./ReactionetLasso.py -m 20150728TRAILHeLa4 -p 0.05 -o 2 -g FDS -t PriorTopology1 -a PriorStoich1 &
+nohup ./ReactionetLasso.py -m 20150728TRAILHeLa4 -p 0.05 -o 2 -g FDS -t PriorTopology1 -a PriorStoich1 -c connected &
+
+
+
+nohup ./ReactionetLasso.py -m 20150728TRAILHeLa3 -p 0.05 -o 2 -g FDS -t PriorTopology1 -a PriorStoich2 &
+nohup ./ReactionetLasso.py -m 20150728TRAILHeLa3 -p 0.05 -o 2 -g FDS -t PriorTopology1 -a PriorStoich2 -c connected &
+
+
+nohup ./ReactionetLasso.py -m ARS1rep5bn100kDT14sp14tp -p 0.05 -o 2 -g FDS &
+nohup ./ReactionetLasso.py -m ARS1rep5bn100kDT14sp14tp -p 0.05 -o 2 -g FDS -c connected &
+
+nohup ./ReactionetLasso.py -m ARS1rep5bn100kDT14sp14tp -p 0.05 -o 2 -g splines &
+nohup ./ReactionetLasso.py -m ARS1rep5bn100kDT14sp14tp -p 0.05 -o 2 -g splines -c connected &
+
+
+
+
+nohup ./ReactionetLasso.py -m 20150728TRAILHeLa2 -p 0.05 -o 2 -g splines -t PriorTopology1 -a PriorStoich1 &
+nohup ./ReactionetLasso.py -m 20150728TRAILHeLa2 -p 0.05 -o 2 -g FDS -t PriorTopology1 -a PriorStoich1 &
+
+nohup ./ReactionetLasso.py -m 20150728TRAILHeLa2 -p 0.05 -o 2 -g splines -t PriorTopology1 -a PriorStoich2 &
+nohup ./ReactionetLasso.py -m 20150728TRAILHeLa2 -p 0.05 -o 2 -g FDS -t PriorTopology1 -a PriorStoich2 &
+
+nohup ./ReactionetLasso.py -m 20150728TRAILHeLa2 -p 0.01 -o 2 -g splines -t PriorTopology1 -a PriorStoich1 &
+nohup ./ReactionetLasso.py -m 20150728TRAILHeLa2 -p 0.01 -o 2 -g FDS -t PriorTopology1 -a PriorStoich1 &
+
+nohup ./ReactionetLasso.py -m 20150728TRAILHeLa2 -p 0.01 -o 2 -g splines -t PriorTopology1 -a PriorStoich2 &
+nohup ./ReactionetLasso.py -m 20150728TRAILHeLa2 -p 0.01 -o 2 -g FDS -t PriorTopology1 -a PriorStoich2 &
+
+nohup ./ReactionetLasso.py -m 20150728TRAILHeLa2 -p 0.1 -o 2 -g splines -t PriorTopology1 -a PriorStoich1 &
+nohup ./ReactionetLasso.py -m 20150728TRAILHeLa2 -p 0.1 -o 2 -g FDS -t PriorTopology1 -a PriorStoich1 &
+
+nohup ./ReactionetLasso.py -m 20150728TRAILHeLa2 -p 0.1 -o 2 -g splines -t PriorTopology1 -a PriorStoich2 &
+nohup ./ReactionetLasso.py -m 20150728TRAILHeLa2 -p 0.1 -o 2 -g FDS -t PriorTopology1 -a PriorStoich2 &
+
+
+
+
+
+nohup ./ReactionetLasso.py -m 20150728TRAILHeLa1 -p 0.05 -o 2 -g splines -t PriorTopology1 &
+nohup ./ReactionetLasso.py -m 20150728TRAILHeLa1 -p 0.01 -o 2 -g splines -t PriorTopology1 &
+nohup ./ReactionetLasso.py -m 20150728TRAILHeLa1 -p 0.1 -o 2 -g splines -t PriorTopology1 &
+
+nohup ./ReactionetLasso.py -m 20150728TRAILHeLa1 -p 0.05 -o 2 -g FDS -t PriorTopology1 &
+nohup ./ReactionetLasso.py -m 20150728TRAILHeLa1 -p 0.01 -o 2 -g FDS -t PriorTopology1 &
+nohup ./ReactionetLasso.py -m 20150728TRAILHeLa1 -p 0.1 -o 2 -g FDS -t PriorTopology1 &
+
+
+nohup ./ReactionetLasso.py -m MisSpTIA6b5bn100kUT30sp33tp -p 0.05 -o 2 -g splines -t PriorTopology1 &
+nohup ./ReactionetLasso.py -m MisSpARS1rep5bn100kDT7sp14tp -p 0.05 -o 2 -g splines -t PriorTopology1 &
+
+
 nohup ./ReactionetLasso.py -m MisSpTIA6b5bn100kUT30sp33tp -p 0.05 -o 2 -g splines  &
 
 nohup ./ReactionetLasso.py -m MisSpTIA6b5bn100kUT30sp33tp -p 0.05 -o 2 -g splines -t PriorTopology1 &
 nohup ./ReactionetLasso.py -m MisSpTIA6b5bn100kUT30sp33tp -p 0.05 -o 2 -g splines  &
+
+nohup ./ReactionetLasso.py -m MisSpARS1rep5bn100kDT7sp14tp -p 0.05 -o 2 -g splines -t PriorTopology1 &
+
+
 
 
 nohup ./ReactionetLasso.py -m MisSpARS1rep5bn100kDT7sp14tp -p 0.05 -o 2 -g splines -t PriorTopology1 &

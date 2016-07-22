@@ -14,11 +14,12 @@ function [ indx ] = SelectOptimalSolution( IC, varargin )
         Nindx = 3;
     end
     
+    [~, indx] = min(IC);
+    
     if all(dIC > 0)
         [~, idx] = sort(dIC, 'descend'); % select biggest step
-        indx = idx(1:Nindx) + 1;
+        indx = [indx idx(1:min(Nindx, length(idx))) + 1];
     else
-        [~, indx] = min(IC);
         Nindx = 2;
         [~, idx] = sort(dIC, 'descend');
         indx = [indx idx(1:Nindx) + 1];

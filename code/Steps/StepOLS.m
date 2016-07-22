@@ -1,4 +1,4 @@
-function [BestResStat, RunTimeS, RunTimeSname] = StepOLS(FolderNames, indx_I, indx_J, values, N_obs, N_re, b, constr, N_T, N_sp)
+function [BestResStat, RunTimeS, RunTimeSname] = StepOLS(FolderNames, indx_I, indx_J, values, N_obs, N_re, b, constr, N_T, N_sp, indxPos)
     RunTimeSname = 'StepOLS';
     fprintf('----------------StepOLS----------------\n');
     OutFolder = sprintf('%s/', FolderNames.ResultsCV);
@@ -11,7 +11,6 @@ function [BestResStat, RunTimeS, RunTimeSname] = StepOLS(FolderNames, indx_I, in
 
     if ~exist(OutFileName, 'file')
     %% Only Means  
-        
         if FolderNames.NMom == 2
             [indx_I, indx_J, values, N_obs, N_re, ~, NonEmptyIndx] = CutDesignRows(indx_I, indx_J, values, N_obs, N_re, N_sp, N_T);         
         else
@@ -23,7 +22,8 @@ function [BestResStat, RunTimeS, RunTimeSname] = StepOLS(FolderNames, indx_I, in
     %% Model Augmentation      
         constrW = constr .* weights;
 %%      solver
-        xW = constrW + lsqnonneg(Aw, b(NonEmptyIndx) - Aw*constrW);
+        xW = zeros(N_re, 1);
+        xW(indxPos) = constrW(indxPos) + lsqnonneg(Aw(:, indxPos), b(NonEmptyIndx) - Aw(:, indxPos)*constrW(indxPos));
 %%      stats  
         BestResStat.xOriginal = xW ./ weights;
         BestResStat.b_hat = Aw*xW;

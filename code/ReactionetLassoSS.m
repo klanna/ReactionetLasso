@@ -4,12 +4,14 @@ function ReactionetLassoSS( ModelName, varargin )
     
     ModelParams = ReadInputParameters( varargin ); % identify default settings
     FolderNames = FolderNamesFun( ModelName, 0, ModelParams );
-    FileNameOut = sprintf('%s/StabilitySelection', FolderNames.Plots);
+    FileNameOut = sprintf('%s/StabilitySelection_%s_%s%u_%s_%s', FolderNames.Plots, ModelName, ModelParams.Gradients, 100*ModelParams.p, ModelParams.PriorTopology, ModelParams.Prior);
     if ~exist(FolderNames.Plots, 'dir')
        mkdir(FolderNames.Plots) 
     end
     
     [xscore, ReNumList] = GetScore( FolderNames, ModelParams );
+%     [xscore, ReNumList] = GetScoreSS( FolderNames, ModelParams );
+    
     [x, ScoreFunctionNameList, mse, AIC, BIC, card, RunTimeS, RunTimeSname] = StabilitySelection( FolderNames, ModelParams, ReNumList, xscore);
     
     PlotComputationTime( FolderNames.Results, ModelName, RunTimeS, RunTimeSname);
@@ -21,7 +23,7 @@ function ReactionetLassoSS( ModelName, varargin )
     load(sprintf('%s/%s.mat', FolderNames.Data, FolderNames.PriorTopology));
     load(sprintf('%s/Data.mat', FolderNames.Data), 'SpeciesNames');
     
-    [~, PriorGraph] = ReadConstraints( FolderNames, size(stoich, 2) );
+    [~, PriorGraph] = ReadConstraints( FolderNames, stoich);
     
     ResScore = zeros(size(stoich, 2), 1);
     ResScore(ReNumList) = xscore;
@@ -35,7 +37,7 @@ function ReactionetLassoSS( ModelName, varargin )
         filename = sprintf('%s_%s', FileNameOut, SolName);
         PriorListIndx = [PriorGraph.indx];
         if ~isempty(PriorListIndx)
-            for p = 1:lenght(PriorListIndx)
+            for p = 1:length(PriorListIndx)
                 PriorList(p) = find(indxPos == PriorListIndx(p));
             end
         else

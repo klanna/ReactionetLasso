@@ -40,8 +40,8 @@ def ReactionetLasso(options):
 		Names.GetNames(options, cv)
 		FileName = '{0}/{1}'.format(options.DefaultPath, Names.ResultsCV)
 		if  not CheckFileExist(FileName, StatusFile):
-			Param = '"(\'{0}\', {1:d}, \'{2}\', {3:d}, {4:d}, {5:f}, \'{6}\', \'{7}\')"'.format(options.ModelName, cv,
-				options.GradientType, options.NMom, options.Nboot, options.p, options.PriorGraph, options.PriorTopology)
+			Param = '"(\'{0}\', {1:d}, \'{2}\', {3:d}, {4:d}, {5:f}, \'{6}\', \'{7}\', \'{8}\')"'.format(options.ModelName, cv,
+				options.GradientType, options.NMom, options.Nboot, options.p, options.PriorGraph, options.PriorTopology, options.connect)
 			
 			CallSeqLine = 'bsub -n 1 -e {0}_ERR.txt -o {0}_OUT.txt -W "{1:d}:00" -R "rusage[mem={2:d}]" matlab -singleCompThread -nodisplay -r ReactionetLasso{3}'.format(Names.JobsOutput, 
 				Names.Time, Names.Mem, Param)
@@ -62,12 +62,12 @@ def ReactionetLasso(options):
 	# submit stability selection
 	WriteMessageToFile(StatusFile, '\nsubmit stability selection\n')
 	FileName = '{0}/{1}'.format(options.DefaultPath, Names.Results)
-	if  not CheckFileExist(FileName, StatusFile):
-		Param = '"(\'{0}\', \'{1}\', {2:d}, {3:d}, {4:f}, \'{5}\', \'{6}\')"'.format(options.ModelName,
-				options.GradientType, options.NMom, options.Nboot, options.p, options.PriorGraph, options.PriorTopology)
-		CallSeqLine = 'bsub -n 1 -e {0}_ERR.txt -o {0}_OUT.txt -W "{1:d}:00" -R "rusage[mem={2:d}]" matlab -singleCompThread -nodisplay -r ReactionetLassoSS{3}'.format(Names.JobsOutput, 
-				Names.Time, Names.Mem, Param)
-		os.system(CallSeqLine)
+	# if  not CheckFileExist(FileName, StatusFile):
+	Param = '"(\'{0}\', \'{1}\', {2:d}, {3:d}, {4:f}, \'{5}\', \'{6}\', \'{7}\')"'.format(options.ModelName,
+			options.GradientType, options.NMom, options.Nboot, options.p, options.PriorGraph, options.PriorTopology, options.connect)
+	CallSeqLine = 'bsub -n 1 -e {0}_ERR.txt -o {0}_OUT.txt -W "{1:d}:00" -R "rusage[mem={2:d}]" matlab -singleCompThread -nodisplay -r ReactionetLassoSS{3}'.format(Names.JobsOutput, 
+			Names.Time, Names.Mem, Param)
+	os.system(CallSeqLine)
 		# CallSeqLine = 'bsub -n 1 -e {0}_ERR.txt -o {0}_OUT.txt -W "{1:d}:00" -R "rusage[mem={2:d}]" matlab -singleCompThread -nodisplay -r TopologicalFiltering{3}'.format(Names.JobsOutput, 
 		# 		Names.Time, Names.Mem, Param)
 		# os.system(CallSeqLine)

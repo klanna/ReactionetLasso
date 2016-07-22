@@ -12,11 +12,11 @@ function StabilitySelectionPlot( M, titlename, iBestNames, FileName, iBest)
 
     M_fp = M(:, 2);
     M_tp = M(:, 1);
-    plot(M_fp, M_tp, '-', 'color', MyColor(1, :), 'MarkerSize', MarkerSize, 'LineWidth', lwidth)
+    plot(M_fp, M_tp, '-', 'color', 'black', 'MarkerSize', MarkerSize, 'LineWidth', lwidth)
     hold on
     NBest = length(iBest);
     for i = 1:NBest
-        plot(M_fp(iBest(i)), M_tp(iBest(i)), 'x', 'color',  MyColor(i+1, :), 'MarkerSize', MarkerSize*3, 'LineWidth', lwidth*3)
+        plot(M_fp(iBest(i)), M_tp(iBest(i)), 'x', 'color',  MyColor(mod(i, size(MyColor, 1)) + 1, :), 'MarkerSize', MarkerSize*3, 'LineWidth', lwidth*3)
         hold on
     end
     
