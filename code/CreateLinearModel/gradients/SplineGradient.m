@@ -1,6 +1,11 @@
-function [dE, pp] = SplineGradient(y, x)    
+function [dE, pp, t, E] = SplineGradient(y, x)    
+    y = VertVect(y);
+    x = VertVect(x);
     pp = spline(x,y); %fit cubic splines
     [breaks,coefs] = unmkpp(pp);
+    
+    t = min(x):1:max(x);
+    E = VertVect(ppval(mkpp(breaks,coefs), t));
     
     for cc = 1:3
         dcoefs(:, cc) = (4-cc)*coefs(:, cc);

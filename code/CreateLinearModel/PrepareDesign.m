@@ -18,7 +18,7 @@ function [indx_I, indx_J, values, N_obs, N_re, RunTimeS, RunTimeSname] = Prepare
     end
     NMom = FolderNames.NMom;
     
-%     if ~exist(OutFileName, 'file') || ~SaveFlag
+    if ~exist(OutFileName, 'file') || ~SaveFlag
         % fprintf('ConstructDesignMatrix %s...\n', FolderNames.ModelNameT);
         ts = tic;
 
@@ -118,10 +118,10 @@ function [indx_I, indx_J, values, N_obs, N_re, RunTimeS, RunTimeSname] = Prepare
             save(OutFileName, '-v7.3', 'indx_I', 'indx_J', 'values', 'N_obs', 'N_re', 'RunTimeS')
         end
         
-        % FormatTime( RunTimeS, 'ConstructDesignMatrix finished in ' );
-%     else
-%         load(OutFileName, 'indx_I', 'indx_J', 'values', 'N_obs', 'N_re');
-%     end
+        FormatTime( RunTimeS, 'ConstructDesignMatrix finished in ' );
+    else
+        load(OutFileName);
+    end
 end
 
 

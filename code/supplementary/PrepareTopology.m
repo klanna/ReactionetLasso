@@ -20,7 +20,7 @@ function [stoich, RunTimeS, RunTimeName ] = PrepareTopology( FolderNames )
             
         else
             load(FileName)
-            stoich = GenerateMetaTopologyFromDGraph(SpeciesNames, G);
+            stoich = GenerateMetaTopologyFromDGraphWithInhibition(SpeciesNames, G);
             save(FileName, '-append', 'stoich')
         end
         RunTimeS = toc;

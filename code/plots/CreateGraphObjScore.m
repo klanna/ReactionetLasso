@@ -1,4 +1,4 @@
-function bg = CreateGraphObjScore( AdjMat, NodesProp, TPMat, FPMat, PMat )
+function bg = CreateGraphObjScore( AdjMat, NodesProp, TPMat, FPMat, PMat, Blocks )
 % create biograph object
     AdjMat1 = AdjMat;
     AdjMat1(find(AdjMat1)) = 1;
@@ -10,6 +10,14 @@ function bg = CreateGraphObjScore( AdjMat, NodesProp, TPMat, FPMat, PMat )
     ReactColorFP = [0 0 1]; % blue
     ReactColorFN = [255 204 229]/255; % pink
     ReactColorP = [51 0 0]/255;
+    NodeColorMat = [153 204 255;
+        179,226,205;
+241,182,218;
+203,213,232;
+244,202,228;
+230,245,201;
+255,242,174;
+241,226,204]/255;
     %%
     set(bg.edges,'LineColor',ReactColorFN);
     set(bg,'LayoutScale',0.5);
@@ -18,7 +26,7 @@ function bg = CreateGraphObjScore( AdjMat, NodesProp, TPMat, FPMat, PMat )
     for i = [NodesProp.OriNodes]
         bg.nodes(i).Shape = 'rectangle';
         bg.nodes(i).Size = [60 30];
-        bg.nodes(i).color = NodeColor;
+        bg.nodes(i).color = NodeColorMat(Blocks(i), :);
         bg.nodes(i).FontSize = 10;
     end
     

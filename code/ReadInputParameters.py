@@ -21,6 +21,7 @@ def ReadInputParameters():
 	parser.add_option('-a', '--PriorGraph', dest='PriorGraph', default = '')
 	parser.add_option('-t', '--PriorTopology', dest='PriorTopology', default = 'Topology')
 	parser.add_option('-c', '--connect', dest='connect', default = '')
+	parser.add_option('-l', '--momclose', dest='momclose', default = '')
 
 	(options, args) = parser.parse_args()
 	return options
@@ -65,12 +66,12 @@ class NamesClass(object):
 		else:
 			self.SysName = '{0}_{1}{2:d}_Boot{3:d}_p{4:d}'.format(options.ModelName, options.GradientType, options.NMom, options.Nboot, int(options.p*100))
 
-		self.JobsOutput = '../JOBS/{0}{3}{1}_{2}'.format(self.SysName, options.PriorTopology, options.PriorGraph, options.connect)	    
+		self.JobsOutput = '../JOBS/{0}{3}{1}_{2}{4}'.format(self.SysName, options.PriorTopology, options.PriorGraph, options.connect, options.momclose)	    
 		self.Moments = 'Moments/{0}/CV_{1:d}/'.format(options.ModelName, cv)
-		self.ResultsCV = 'resultsCV/{0}/CV_{1:d}/{4}{2}_{3}/StepLASSO.mat'.format(self.SysName, cv, options.PriorTopology, options.PriorGraph, options.connect)
+		self.ResultsCV = 'resultsCV/{0}/CV_{1:d}/{4}{2}_{3}{5}/StepLASSO.mat'.format(self.SysName, cv, options.PriorTopology, options.PriorGraph, options.connect, options.momclose)
 		# self.ResultsCV = 'resultsCV/{0}/CV_{1:d}/{4}{2}_{3}/StepStabilitySelection.mat'.format(self.SysName, cv, options.PriorTopology, options.PriorGraph, options.connect)
 		
-		self.Results = 'results/{0}/{3}{1}_{2}/StabilitySelection.mat'.format(self.SysName, options.PriorTopology, options.PriorGraph, options.connect)
+		self.Results = 'results/{0}/{3}{1}_{2}{4}/StabilitySelection.mat'.format(self.SysName, options.PriorTopology, options.PriorGraph, options.connect, options.momclose)
 		self.Mem = 6*1028
 		self.Time = 4
 		

@@ -1,4 +1,4 @@
-function [BestResStat, RunTimeS, RunTimeSname]= StepFG( FolderNames, indx_I, indx_J, values, N_obs, N_re, b, bStdEps, constr, indxPos)
+function [BestResStat, RunTimeS, RunTimeSname]= StepFG( FolderNames, indx_I, indx_J, values, N_obs, N_re, b, bStdEps, constr, indxPos, stoich)
     RunTimeSname = 'StepFG';
     fprintf('----------------%s----------------\n', RunTimeSname);
     OutFolder = sprintf('%s/', FolderNames.ResultsCV);
@@ -17,9 +17,15 @@ function [BestResStat, RunTimeS, RunTimeSname]= StepFG( FolderNames, indx_I, ind
         x(indxPos) = lsq_step(Aw(:, indxPos), b, weights(indxPos), constrW(indxPos)); % old version   
         save(OutFileName, 'x');
     %%
-        BestResStat.xOriginal = x;
-        BestResStat.b_hat  = (Aw*(x .* weights)).*bStdEps;        
-        BestResStat.card = length(find(x));    
+        BestResStat.b_hat  = (Aw*(x .* weights)).*bStdEps; 
+        
+        if strcmp(FolderNames.connect, 'connected') 
+            BestResStat.xOriginal = CheckConnected( stoich, x );
+        else
+            BestResStat.xOriginal = x;
+        end
+            
+        BestResStat.card = length(find(BestResStat.xOriginal));    
         RunTimeS = toc(ts);
         save(OutFileName, '-append', 'BestResStat', 'RunTimeS');    
         FormatTime( RunTimeS, 'finished in ' );

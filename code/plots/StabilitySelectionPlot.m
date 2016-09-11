@@ -1,8 +1,8 @@
-function StabilitySelectionPlot( M, titlename, iBestNames, FileName, iBest)
+function StabilitySelectionPlot( M, titlename, iBestNames, FileName, iOptIdx, FDRBest)
     fprintf('StabilitySelectionPlot\n');
     PaperFonts
     
-    iBestShapes = {'o', 's', '+', 'o', 's', '+', 'o', 's', '+'};
+    iBestShapes = {'o', 's', '+'};
     
     size1 = 6;
     size2 = size1;
@@ -14,9 +14,11 @@ function StabilitySelectionPlot( M, titlename, iBestNames, FileName, iBest)
     M_tp = M(:, 1);
     plot(M_fp, M_tp, '-', 'color', 'black', 'MarkerSize', MarkerSize, 'LineWidth', lwidth)
     hold on
-    NBest = length(iBest);
+    NBest = size(FDRBest, 1);
     for i = 1:NBest
-        plot(M_fp(iBest(i)), M_tp(iBest(i)), 'x', 'color',  MyColor(mod(i, size(MyColor, 1)) + 1, :), 'MarkerSize', MarkerSize*3, 'LineWidth', lwidth*3)
+        plot(M_fp(iOptIdx(i)), M_tp(iOptIdx(i)), iBestShapes{1 + mod(i, length(iBestShapes))}, 'color',  MyColor(mod(i, size(MyColor, 1)) + 1, :), 'MarkerSize', MarkerSize*3, 'LineWidth', lwidth*3)
+        hold on
+        plot(FDRBest(:, 2), FDRBest(:, 1), iBestShapes{1 + mod(i, length(iBestShapes))}, 'color',  MyColor(mod(i, size(MyColor, 1)) + 1, :), 'MarkerSize', MarkerSize*3, 'LineWidth', lwidth*3)
         hold on
     end
     

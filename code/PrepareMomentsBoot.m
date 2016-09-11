@@ -17,12 +17,23 @@ function [ Eb, Vb, Cb, E2b, C3b, E12b, RunTimeS ] = PrepareMomentsBoot( boot, Mo
     end
     
     OutFileName = sprintf('%s/Boot_%u.mat', OutFolder, boot);    
-    OutFileNameVal = sprintf('%s/ValidationSet.mat', FolderNames.Moments);
+    OutFileNameVal = sprintf('%s/ValidationSet_cv%u.mat', FolderNames.Data, nset);
+    
     if ~exist(FolderNames.Moments, 'dir')
         mkdir(FolderNames.Moments)
     end
     % LOAD DATA
-
+    
+    ts = tic;
+    if boot == 1
+        for t = 1:length(Timepoints)
+            Trajectories = dataVal{t};
+            [ E(:, t), V(:, t), C(:, t), E2(:, t), C3(:, t), E12(:, t) ] = PrepareMomentsFromTrajectories( Trajectories, boot );
+        end
+        RunTimeS = toc(ts);
+        save(OutFileNameVal, 'E', 'V', 'C', 'E2', 'C3', 'E12', 'RunTimeS');
+    end
+        
     if ~exist(OutFileName, 'file')        
         ts = tic;
         for t = 1:length(Timepoints)
@@ -32,17 +43,6 @@ function [ Eb, Vb, Cb, E2b, C3b, E12b, RunTimeS ] = PrepareMomentsBoot( boot, Mo
         RunTimeS = toc(ts);
         save(OutFileName, '-v7.3', 'Eb', 'Vb', 'Cb', 'E2b', 'C3b', 'E12b', 'RunTimeS');
         FormatTime( RunTimeS, 'PrepareMomentsBoot finished in ' );
-        
-        ts = tic;
-        if boot == 1
-            for t = 1:length(Timepoints)
-                Trajectories = dataVal{t};
-                [ E(:, t), V(:, t), C(:, t), E2(:, t), C3(:, t), E12(:, t) ] = PrepareMomentsFromTrajectories( Trajectories, boot );
-            end
-            RunTimeS = toc(ts);
-            save(OutFileNameVal, 'E', 'V', 'C', 'E2', 'C3', 'E12', 'RunTimeS');
-        end
-        
     else
         load(OutFileName) 
     end      

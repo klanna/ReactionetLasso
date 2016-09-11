@@ -4,7 +4,8 @@ function ReactionetLassoSS( ModelName, varargin )
     
     ModelParams = ReadInputParameters( varargin ); % identify default settings
     FolderNames = FolderNamesFun( ModelName, 0, ModelParams );
-    FileNameOut = sprintf('%s/StabilitySelection_%s_%s%u_%s_%s', FolderNames.Plots, ModelName, ModelParams.Gradients, 100*ModelParams.p, ModelParams.PriorTopology, ModelParams.Prior);
+%     FileNameOut = sprintf('%s/StabilitySelection_%s_%s%u_%s_%s', FolderNames.Plots, ModelName, ModelParams.Gradients, 100*ModelParams.p, ModelParams.PriorTopology, ModelParams.Prior);
+    FileNameOut = sprintf('%s/StabilitySelection', FolderNames.Plots);
     if ~exist(FolderNames.Plots, 'dir')
        mkdir(FolderNames.Plots) 
     end
@@ -12,7 +13,7 @@ function ReactionetLassoSS( ModelName, varargin )
     [xscore, ReNumList] = GetScore( FolderNames, ModelParams );
 %     [xscore, ReNumList] = GetScoreSS( FolderNames, ModelParams );
     
-    [x, ScoreFunctionNameList, mse, AIC, BIC, card, RunTimeS, RunTimeSname] = StabilitySelection( FolderNames, ModelParams, ReNumList, xscore);
+    [x, b_hat, ScoreFunctionNameList, mse, AIC, BIC, card, RunTimeS, RunTimeSname] = StabilitySelection( FolderNames, ModelParams, ReNumList, xscore);
     
     PlotComputationTime( FolderNames.Results, ModelName, RunTimeS, RunTimeSname);
     
@@ -43,9 +44,18 @@ function ReactionetLassoSS( ModelName, varargin )
         else
             PriorList = [];
         end
-        PrintGraphWithScore( filename, stoich(:, indxPos), SpeciesNames, [1:N_re], [], PriorList, ResScore(indxPos) );
+        
+        if exist(sprintf('%s/Blocks.mat', FolderNames.Data), 'file')
+            load(sprintf('%s/Blocks.mat', FolderNames.Data));
+        else
+            Blocks = ones(length(SpeciesNames), 1);
+        end
+        PrintGraphWithScore( filename, stoich(:, indxPos), SpeciesNames, [1:N_re], [], PriorList, ResScore(indxPos), Blocks );
     end
-
+    
+    SimulateODEfit( ModelName, varargin );
+    ComputeODEfit( ModelName, varargin );
+    
     if exist(sprintf('%s/TrueStruct.mat', FolderNames.Data), 'file')
 		ReactionetLassoPlots( 'all', ModelName, varargin );
     end

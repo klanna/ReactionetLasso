@@ -2466,3 +2466,19 @@ bsub -n 1 -e ../JOBS/MisARS5bn100kDT14sp15tp_splines2_Boot100_p5_ERR.txt -o ../J
 bsub -n 1 -e ../JOBS/MisARS5bn100kDT14sp15tp_splines2_Boot100_p5_ERR.txt -o ../JOBS/MisARS5bn100kDT14sp15tp_splines2_Boot100_p5_OUT.txt -W "4:00" -R "rusage[mem=2056]" matlab -singleCompThread -nodisplay -r ReactionetLasso"('MisARS5bn100kDT14sp15tp', 3, 'splines', 2, 100, 0.050000, '')"
 bsub -n 1 -e ../JOBS/MisARS5bn100kDT14sp15tp_splines2_Boot100_p5_ERR.txt -o ../JOBS/MisARS5bn100kDT14sp15tp_splines2_Boot100_p5_OUT.txt -W "4:00" -R "rusage[mem=2056]" matlab -singleCompThread -nodisplay -r ReactionetLasso"('MisARS5bn100kDT14sp15tp', 4, 'splines', 2, 100, 0.050000, '')"
 bsub -n 1 -e ../JOBS/MisARS5bn100kDT14sp15tp_splines2_Boot100_p5_ERR.txt -o ../JOBS/MisARS5bn100kDT14sp15tp_splines2_Boot100_p5_OUT.txt -W "4:00" -R "rusage[mem=2056]" matlab -singleCompThread -nodisplay -r ReactionetLasso"('MisARS5bn100kDT14sp15tp', 5, 'splines', 2, 100, 0.050000, '')"
+Traceback (most recent call last):
+  File "./ReactionetLasso.py", line 97, in <module>
+    ReactionetLasso(optionsIter)
+  File "./ReactionetLasso.py", line 38, in ReactionetLasso
+    WriteMessageToFile(StatusFile, '\nsubmit CV-jobs\n')
+  File "/Users/klanna/ETHZ/ReactionetLasso/code/ReadInputParameters.py", line 37, in WriteMessageToFile
+    f = open(Fname, 'a+')
+IOError: [Errno 2] No such file or directory: '../JOBS/ARS1rep100kDT14sp8tp5bn_splines2_Boot100_p5Topology__log.txt'
+Traceback (most recent call last):
+  File "./ReactionetLasso.py", line 97, in <module>
+    ReactionetLasso(optionsIter)
+  File "./ReactionetLasso.py", line 38, in ReactionetLasso
+    WriteMessageToFile(StatusFile, '\nsubmit CV-jobs\n')
+  File "/Users/klanna/ETHZ/ReactionetLasso/code/ReadInputParameters.py", line 37, in WriteMessageToFile
+    f = open(Fname, 'a+')
+IOError: [Errno 2] No such file or directory: '../JOBS/ARS1rep100kDT14sp29tp5bn_splines2_Boot100_p5Topology__log.txt'

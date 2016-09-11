@@ -34,13 +34,13 @@ function FDRscore = ReactionetLassoPlots( PlotType, ModelName, varargin )
             FName = sprintf('%s/%s', FolderNames.ResultsCV, StepName);
             load(sprintf('%s.mat', FName));    
             PlotScatterCons( kTrue, BestResStat.xOriginal, StepName, sprintf('%s/%s', FolderNames.PlotsCV, StepName), pic);
-            PlotFitToLinearSystem( FolderNames.NMom, b, BestResStat.b_hat, N_T, N_sp, sprintf('%s/%s', FolderNames.PlotsCV, StepName), pic);
+%             PlotFitToLinearSystem( FolderNames.NMom, b, BestResStat.b_hat, N_T, N_sp, sprintf('%s/%s', FolderNames.PlotsCV, StepName), pic);
 
             StepName = 'StepFG';
             FName = sprintf('%s/%s', FolderNames.ResultsCV, StepName);
             load(sprintf('%s.mat', FName));    
             PlotScatterCons( kTrue, BestResStat.xOriginal, StepName, sprintf('%s/%s', FolderNames.PlotsCV, StepName), pic);
-            PlotFitToLinearSystem( FolderNames.NMom, b, BestResStat.b_hat, N_T, N_sp, sprintf('%s/%s', FolderNames.PlotsCV, StepName), pic);
+%             PlotFitToLinearSystem( FolderNames.NMom, b, BestResStat.b_hat, N_T, N_sp, sprintf('%s/%s', FolderNames.PlotsCV, StepName), pic);
         end
         
         StepName = 'StepLASSO';
@@ -63,12 +63,16 @@ function FDRscore = ReactionetLassoPlots( PlotType, ModelName, varargin )
     end
     A{1} = AA;
 %     
-    [~, PriorGraph] = ReadConstraints( FolderNames, size(stoich, 2) );
+    [~, PriorGraph] = ReadConstraints( FolderNames, stoich );
     
     load(sprintf('%s/StabilitySelection.mat', FolderNames.Results))
     for i = 1:size(x, 2)
         FDRscore(i, :) = FDR(kTrue, x(:, i));
     end
+    for i = 1:length(ScoreFunctionNameList)
+        FDRscoreOpt(i, :) = FDR(kTrue, xOpt(:, i));
+    end
+    
     A{2} = {FDRscore};
     titlename{2} = 'Stability Selection';
     LegendNames{2} = {};
@@ -87,10 +91,21 @@ function FDRscore = ReactionetLassoPlots( PlotType, ModelName, varargin )
     
     indx_k = find(kTrue);
     
-    save(sprintf('%s/StabilitySelection.mat', FolderNames.Results), '-append', 'FDRscore')
+    ROCscore(:, 1) = FDRscore(:, 1) / length(indx_k);
+    ROCscore(:, 2) = FDRscore(:, 2) ./ (size(stoich, 2) - (FDRscore(:, 1) + FDRscore(:, 2) ) );
+    
+    ROCscoreOpt = FDRscoreOpt;
+    ROCscoreOpt(:, 1) = FDRscoreOpt(:, 1) / length(indx_k);
+    ROCscoreOpt(:, 2) = FDRscoreOpt(:, 2) ./ (size(stoich, 2) - (FDRscoreOpt(:, 1) + FDRscoreOpt(:, 2) ));
+    
+    save(sprintf('%s/StabilitySelection.mat', FolderNames.Results), '-append', 'FDRscore', 'FDRscoreOpt', 'ROCscoreOpt', 'ROCscore')
     
     FileName = sprintf('%s/StabilitySelection_%s', FolderNames.Plots, ModelName);
-    StabilitySelectionPlot( FDRscore, '', ScoreFunctionNameList, FileName, xOptIndx);
+    StabilitySelectionPlot( FDRscore, '', ScoreFunctionNameList, FileName, xOptIndx, FDRscoreOpt);
+    
+    FileName = sprintf('%s/ROC_%s', FolderNames.Plots, ModelName);
+    ROCPlot( {ROCscore}, ModelName, FileName, {sprintf('%s %s, p = %.2f', ModelParams.Gradients, ModelParams.connect, ModelParams.p)});
+    
     
     if strcmp(PlotType, 'all')
         for i = 1:length(ScoreFunctionNameList)
@@ -102,7 +117,7 @@ function FDRscore = ReactionetLassoPlots( PlotType, ModelName, varargin )
 
             PriorListIndx = [PriorGraph.indx];
             if ~isempty(PriorListIndx)
-                for p = 1:lenght(PriorListIndx)
+                for p = 1:length(PriorListIndx)
                     PriorList(p) = find(indxPos == PriorListIndx(p));
                 end
             else
@@ -120,9 +135,17 @@ function FDRscore = ReactionetLassoPlots( PlotType, ModelName, varargin )
             for j = 1:length(TPList0)
                 TPList(j) = find(indxPos == TPList0(j));
             end
-
-            PrintGraphWithScore( FName, stoich(:, indxPos), SpeciesNames, TPList, FPList, PriorList, ResScore(indxPos) );
-
+            
+            BlockFile = sprintf('%s/Blocks.mat', FolderNames.Data);
+            
+            if exist(BlockFile)
+                load(BlockFile)                
+            else
+                Blocks = ones(length(SpeciesNames), 1);
+            end
+            
+            PrintGraphWithScore( FName, stoich(:, indxPos), SpeciesNames, TPList, FPList, PriorList, ResScore(indxPos), Blocks );
+            
             clear FPList TPList PriorList
         end
     end

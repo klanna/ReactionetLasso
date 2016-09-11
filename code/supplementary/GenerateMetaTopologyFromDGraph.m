@@ -8,12 +8,9 @@ function [stoichAll, ReactionNamesAll] = GenerateMetaTopologyFromDGraph(SpeciesN
     if ~isempty(varargin)
         G = varargin{1};
     else
-        G = triu(ones(N_sp, N_sp));
+        G = ones(N_sp, N_sp) - diag(ones(N_sp, 1));
     end
-    %%
-    for i = 1:N_sp
-        G(i, i) = 0;
-    end
+
     %%
     xyzCombinations = {};
     for child = 1:N_sp
@@ -45,8 +42,6 @@ function [stoichAll, ReactionNamesAll] = GenerateMetaTopologyFromDGraph(SpeciesN
         
         if length(xyzset) > 2
             z = xyzset(3);
-
-            
             [ ReactionNamesAll{l}, stoichAll(:, l)] = GenerateReactionTopologyXY_Z( x, y, z, SpeciesNames, N_sp);
         else
             [ ReactionNamesAll{l}, stoichAll(:, l)] = GenerateReactionTopologyX_Y( x, y, SpeciesNames, N_sp);

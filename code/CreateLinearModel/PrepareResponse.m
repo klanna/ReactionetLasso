@@ -11,27 +11,32 @@ function [b, bStd, RunTimeS, RunTimeSname] = PrepareResponse( FolderNames, E, V,
         ts = tic;
         fprintf('%s %s...\t', RunTimeSname, FolderNames.ModelName);
         
-        switch FolderNames.Gradients
-            case 'FDS'
-                for Sample = 1:size(E, 3)
-                    if FolderNames.NMom == 2
-                        dMom_sm = GradientsFD([squeeze(E(:, : , Sample)); squeeze(V(:, : , Sample)); squeeze(C(:, : , Sample))], Timepoints);
-                    else
-                        dMom_sm = GradientsFD(squeeze(E(:, : , Sample)), Timepoints);
-                    end
-                    bBoot(:, Sample) = reshape(dMom_sm, [], 1);
+        if strcmp( FolderNames.Gradients, 'FDS')
+            for Sample = 1:size(E, 3)
+                if FolderNames.NMom == 2
+                    dMom_sm = GradientsFD([squeeze(E(:, : , Sample)); squeeze(V(:, : , Sample)); squeeze(C(:, : , Sample))], Timepoints);
+                else
+                    dMom_sm = GradientsFD(squeeze(E(:, : , Sample)), Timepoints);
                 end
-            case 'splines'
-                for Sample = 1:size(E, 3)
-                    if FolderNames.NMom == 2
-                        dMom_sm = GradientsSplines([squeeze(E(:, : , Sample)); squeeze(V(:, : , Sample)); squeeze(C(:, : , Sample))], Timepoints);
-                    else
-                        dMom_sm = GradientsSplines(squeeze(E(:, : , Sample)), Timepoints);
-                    end
-                    bBoot(:, Sample) = reshape(dMom_sm, [], 1);
+                bBoot(:, Sample) = reshape(dMom_sm, [], 1);
+            end
+        else 
+            for Sample = 1:size(E, 3)
+                if FolderNames.NMom == 2
+                    dMom_sm = GradientsSplines([squeeze(E(:, : , Sample)); squeeze(V(:, : , Sample)); squeeze(C(:, : , Sample))], Timepoints, FolderNames.Gradients);
+                else
+                    dMom_sm = GradientsSplines(squeeze(E(:, : , Sample)), Timepoints, FolderNames.Gradients);
                 end
+                bBoot(:, Sample) = reshape(dMom_sm, [], 1);
+            end
         end    
         b = bBoot(:, 1);
+        
+        if strcmp( FolderNames.Gradients, 'adaptive')
+            FolderName = strrep(FolderName, 'adaptive', 'splines2');
+            load(sprintf('%s/BestResponse.mat', FolderName), 'b')
+        end
+        
         %% prepare response    
         bStd = std(bBoot, 0, 2);
         RunTimeS = toc(ts);

@@ -1,4 +1,4 @@
-function [BestResStat, RunTimeS, RunTimeSname] = StepOLS(FolderNames, indx_I, indx_J, values, N_obs, N_re, b, constr, N_T, N_sp, indxPos)
+function [BestResStat, RunTimeS, RunTimeSname] = StepOLS(FolderNames, indx_I, indx_J, values, N_obs, N_re, b, constr, N_T, N_sp, indxPos, varargin)
     RunTimeSname = 'StepOLS';
     fprintf('----------------StepOLS----------------\n');
     OutFolder = sprintf('%s/', FolderNames.ResultsCV);
@@ -12,7 +12,16 @@ function [BestResStat, RunTimeS, RunTimeSname] = StepOLS(FolderNames, indx_I, in
     if ~exist(OutFileName, 'file')
     %% Only Means  
         if FolderNames.NMom == 2
-            [indx_I, indx_J, values, N_obs, N_re, ~, NonEmptyIndx] = CutDesignRows(indx_I, indx_J, values, N_obs, N_re, N_sp, N_T);         
+            if isempty(varargin)
+                [indx_I, indx_J, values, N_obs, N_re, ~, NonEmptyIndx] = CutDesignRows(indx_I, indx_J, values, N_obs, N_re, N_sp, N_T);         
+            else
+                NonEmptyIndx = varargin{1};
+                A = sparse(indx_I, indx_J, values, N_obs, N_re);
+                Aw = A(NonEmptyIndx, :);
+                [indx_I, indx_J, values] = find(Aw);
+                [N_obs, N_re] = size(Aw);
+                clear A Aw
+            end
         else
             NonEmptyIndx = find(WeightsMask( N_sp, N_T, length(b), [1 0 0], 2 ));
         end

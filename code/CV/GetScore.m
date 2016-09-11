@@ -3,7 +3,7 @@ function [xscore, ReNumList] = GetScore( FolderNames, ModelParams )
         mkdir(FolderNames.Results)
     end
     FileNameOut = sprintf('%s/ReactionFrequency.mat', FolderNames.Results);
-%     if ~exist(FileNameOut, 'file')
+    if ~exist(FileNameOut, 'file')
         Ncv = 5;
         load(sprintf('%s/%s.mat', FolderNames.Data, FolderNames.PriorTopology));
 
@@ -41,9 +41,9 @@ function [xscore, ReNumList] = GetScore( FolderNames, ModelParams )
         fprintf('Start Stability Selection with %u reactions\n', length(find(xscore)));
         save(FileNameOut, 'xscore', 'ReNumList')
 
-%     else
-%         load(FileNameOut)
-%     end
+    else
+        load(FileNameOut)
+    end
 end
 
 

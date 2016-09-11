@@ -39,14 +39,12 @@ function ReactionetLasso( ModelName, nset, varargin )
         
         %% Feasible Generalized Least Squares Step
 %         [xb, RunTimeS, RunTimeSName] = BoostFeatureSelecion( FolderNames, E, V, C, E2, C3, E12, stoich, b, constr);
-        [BestResStat, RunTimeS(end+1), RunTimeSname{end+1}] = StepFG( FolderNames, indx_I, indx_J, valuesNoiseNorm, N_obs, N_re, bNoiseNorm, bStdEps, constr, 1:N_re);        
+        [BestResStat, RunTimeS(end+1), RunTimeSname{end+1}] = StepFG( FolderNames, indx_I, indx_J, valuesNoiseNorm, N_obs, N_re, bNoiseNorm, bStdEps, constr, 1:N_re, stoich);        
         
         xW = BestResStat.xOriginal;
         %% Adaptive Relaxed Lasso Step 
 %         [StatLassoLL, RunTimeS(end+1), RunTimeSname{end+1}] = StepLASSO( FolderNames, indx_I, indx_J, valuesNoiseNorm, N_obs, N_re, N_sp, bNoiseNorm, bStdEps, constr, BestResStat, PriorGraph.indx);
-        if strcmp(FolderNames.connect, 'connected') 
-            [ BestResStat.xOriginal ] = CheckConnected( stoich, BestResStat.xOriginal );
-        end
+        
         
         [StatLassoLL, RunTimeS(end+1), RunTimeSname{end+1}] = StepLASSO( FolderNames, indx_I, indx_J, valuesNoiseNorm, N_obs, N_re, N_sp, bNoiseNorm, bStdEps, constr, BestResStat, PriorGraph.indx);
 %         [StatLassoLL, RunTimeS(end+1), RunTimeSname{end+1}] = StepBackwardElimination( FolderNames, indx_I, indx_J, values, N_obs, N_re, N_sp, b, ones(size(bStdEps)), constr, BestResStat, PriorGraph.indx, N_T);

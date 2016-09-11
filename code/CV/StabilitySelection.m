@@ -1,4 +1,4 @@
-function [xOpt, ScoreFunctionNameList, mse, AIC, BIC, card, RunTimeS, RunTimeSname] = StabilitySelection( FolderNames, ModelParams, ReNumList, xscore)
+function [xOpt, b_hat, ScoreFunctionNameList, mse, AIC, BIC, card, RunTimeS, RunTimeSname] = StabilitySelection( FolderNames, ModelParams, ReNumList, xscore)
     FileNameOut = sprintf('%s/StabilitySelection.mat', FolderNames.Results);
 %     if ~exist(FileNameOut, 'file')
         ts = tic;
@@ -15,12 +15,16 @@ function [xOpt, ScoreFunctionNameList, mse, AIC, BIC, card, RunTimeS, RunTimeSna
             load(sprintf('%s/%s_ComputationTime.mat', FolderNamesCV.ResultsCV, FolderNames.ModelName))
             RunTimeScv(cv, :) = RunTimeS;
             
-            [ bCV{cv}, ~, values ] = NoiseNormalization( bStdEps, b, indx_I, values);
+            if exist('bStdEpsM', 'var')
+                [ bCV{cv}, ~, values ] = NoiseNormalization( bStdEpsM, b, indx_I, values);
+            else
+                [ bCV{cv}, ~, values ] = NoiseNormalization( bStdEps, b, indx_I, values);
+            end
             [ values, weightsCV{cv} ] = WeightDesignForRegression( indx_I, indx_J, values, N_obs, N_re ); %  weight design
             AwCV{cv} = sparse(indx_I, indx_J, values, N_obs, N_re);
             constrWCV{cv} = constr .* weightsCV{cv}; 
             
-            load(sprintf('%s/ValidationSet.mat', FolderNamesCV.Moments))
+            load(sprintf('%s/ValidationSet_cv%u.mat', FolderNamesCV.Data, cv))
             [ E, V, C, E2, C3, E12 ] = CorrectMomentsForBinomialNoise( E, V, C, E2, C3, E12, FolderNames.p );
 
             switch FolderNames.Gradients
@@ -33,9 +37,9 @@ function [xOpt, ScoreFunctionNameList, mse, AIC, BIC, card, RunTimeS, RunTimeSna
                     b = reshape(dMom_sm, [], 1);
                 case 'splines'
                     if FolderNames.NMom == 2
-                        dMom_sm = GradientsSplines([E;V;C], Timepoints);
+                        dMom_sm = GradientsSplines([E;V;C], Timepoints, ModelParams.Gradients);
                     else
-                        dMom_sm = GradientsSplines(E, Timepoints);
+                        dMom_sm = GradientsSplines(E, Timepoints, ModelParams.Gradients);
                     end
                     b = reshape(dMom_sm, [], 1);
             end
@@ -57,6 +61,7 @@ function [xOpt, ScoreFunctionNameList, mse, AIC, BIC, card, RunTimeS, RunTimeSna
         mseJold = 10^20;
         
         x = [];
+        b_hat = [];
         for i = 1:NreUni
             IndxSet = setdiff(ReNumList(find(xscore == UniqueXscore(i))), ReNumListCorrected); % find potential set of reactions for a given score-level
             while ~isempty(IndxSet)
@@ -75,7 +80,7 @@ function [xOpt, ScoreFunctionNameList, mse, AIC, BIC, card, RunTimeS, RunTimeSna
                         weights = weightsCV{cv};
                         
                         xCV(:, cv) = (constrW(xset) + lsqnonneg(Aw(:, xset), b - Aw(:, xset)*constrW(xset)) ./ weights(xset));
-                        mseJcv(cv) = sum(((bval - Aval(:, xset)*xCV(:, cv))).^2);
+                        mseJcv(cv) = sqrt(sum(((bval - Aval(:, xset)*xCV(:, cv))).^2))/ length(bval);
                         
                         if length(find(xCV(:, cv))) < (length(xset))
                             % reaction was set to zero or set to zero some
@@ -88,7 +93,7 @@ function [xOpt, ScoreFunctionNameList, mse, AIC, BIC, card, RunTimeS, RunTimeSna
                     end
                     
                     if sum(reFlag) > 1
-%                         fprintf('Bad reaction (score(%u) = %.2f): %u!!\n', i, UniqueXscore(i), xset(end));
+                        fprintf('Bad reaction (score(%u) = %.2f): %u!!\n', i, UniqueXscore(i), xset(end));
                         mseJ = mseJold + 10^20;
                     else
                         mseJ = mean(mseJcv);
@@ -105,9 +110,11 @@ function [xOpt, ScoreFunctionNameList, mse, AIC, BIC, card, RunTimeS, RunTimeSna
                 if jbest
                     x(:, end+1) = xJ;
                     mseXscore(end+1) = mseJold;
+                    b_hat(:, end+1) = (Aval*xJ) .* bStdEps;
                     card(end+1) = length(find(xJ));
                     ReNumListCorrected(end+1) =  IndxSet(jbest);
                     IndxSet(jbest) = [];
+%                     fprintf('Add %u\n', IndxSet(jbest));
                 else
                     IndxSet = []; % in given set we didn't find any good reacions
                 end
@@ -171,11 +178,13 @@ function [xOpt, ScoreFunctionNameList, mse, AIC, BIC, card, RunTimeS, RunTimeSna
         RunTimeS(end+1) = toc(ts);
         RunTimeSname{end+1} = 'StabilitySelection';
         
-        save(FileNameOut, 'x', 'mse', 'AIC', 'BIC', 'ScoreFunctionNameList', 'xOpt', 'xOptIndx', 'RunTimeS', 'RunTimeSname', 'card')
+        save(FileNameOut, 'x', 'mse', 'AIC', 'BIC', 'ScoreFunctionNameList', 'xOpt', 'xOptIndx', 'RunTimeS', 'RunTimeSname', 'card', 'b_hat')
 %     else
 %         load(FileNameOut)
 %     end
 end
+
+
 
 function [xOpt, imin] = OptimalSolution(x, ScoreFunction)  
     [~, imin] = min(ScoreFunction);

@@ -1,6 +1,6 @@
-function bg = PrintGraphWithScore( filename, stoich, SpeciesNames, TPList, FPList, PriorList, ScoreList )
+function bg = PrintGraphWithScore( filename, stoich, SpeciesNames, TPList, FPList, PriorList, ScoreList, Blocks )
     [AdjMat, TPMat, FPMat, PriorMat, NodesProp] = CreateReactionGraphAdjMatrixScore( stoich, SpeciesNames, TPList, FPList, PriorList, ScoreList);
-    bg = CreateGraphObjScore( AdjMat, NodesProp, TPMat, FPMat, PriorMat );
+    bg = CreateGraphObjScore( AdjMat, NodesProp, TPMat, FPMat, PriorMat, Blocks );
     
     g = biograph.bggui(bg);
     

@@ -65,6 +65,8 @@ function CompareTrueFalsePos( A, titlename, LegendNames, FileName)
         set(gca,'XTick',[minx:StepX:maxx], 'FontSize', FSize)
         set(gca,'YTick',[miny:StepY:maxy], 'FontSize', FSize)
     end
+    size1 = 8;
+    size2 = size1;
     PDFprint(FileName,  fig, size1, size2);
 end
 

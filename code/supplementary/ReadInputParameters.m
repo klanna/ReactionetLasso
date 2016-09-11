@@ -12,6 +12,7 @@ function ModelParams = ReadInputParameters( varargin )
     ModelParams.PriorTopology = 'Topology';
     ModelParams.p = 1;
     ModelParams.connect = '';
+    ModelParams.MomentClosure = ''; % 'close0', 'closegauss'
     
     if ~isempty(varargin)
         while isequal(class(varargin{1}), 'cell') 
@@ -35,27 +36,26 @@ function ModelParams = ReadInputParameters( varargin )
                         ModelParams.Nboot = tmp;
                     end
                 case 'char'
-                    if isequal(tmp, 'FDS') || isequal(tmp, 'splines') || isequal(tmp, 'smooth')
-                        ModelParams.Gradients = tmp;
-                    else
-                        if strcmp(tmp, 'connected') || strcmp(tmp, '')
+                    switch tmp
+                        case {'FDS', 'splines', 'splines2', 'smooth', 'adaptive'}
+                            ModelParams.Gradients = tmp;    
+                        case {'close0', 'closegauss'}
+                            ModelParams.MomentClosure = tmp;
+                        case {'connected'}
                             ModelParams.connect = tmp;
-                        else
+                        otherwise
                             if regexp(tmp, 'Topology')
                                 ModelParams.PriorTopology = tmp;
-                            else
+                            elseif regexp(tmp, 'Prior')
                                 ModelParams.Prior = tmp;
                             end
-                        end
                     end
             end
             clear tmp
         end
     end
     
-    fprintf('Gradients = %s\n', ModelParams.Gradients);
     fprintf('NMom = %u\n', ModelParams.NMom);
-    
     fprintf('Prior (topology) = %s %s\n', ModelParams.PriorTopology, ModelParams.connect);
     fprintf('Prior (reactions) = %s\n', ModelParams.Prior);
     fprintf('p = %.2f\n', ModelParams.p);
