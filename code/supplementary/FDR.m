@@ -1,18 +1,18 @@
-function [f, ROCc] = FDR( k, kest )
-    indx_k = find(k);
-    max_true_k = length(indx_k);
+function [f, ROCc] = FDR( ktrue, kest )
+    indx_true_k = find(ktrue);
+    max_true_k = length(indx_true_k);
     
-    indx_pos = find(kest);
-    indx_neg = find(kest == 0);
+    indx_pos_est = find(kest);
+    indx_neg_est = find(kest == 0);
     
-    N = length(k);
+    N = length(ktrue);
     
     ROCc.TPList = zeros(N, 1);
     
-    indxFP = setdiff(indx_pos, indx_k);
-    indxTP = setdiff(indx_pos, indxFP);
-    indxTN = setdiff(indx_neg, indx_k);
-    indxFN = setdiff(indx_neg, indxTN);
+    indxFP = setdiff(indx_pos_est, indx_true_k);
+    indxTP = setdiff(indx_pos_est, indxFP);
+    indxTN = setdiff(indx_neg_est, indx_true_k);
+    indxFN = setdiff(indx_neg_est, indxTN);
     
     TP = length(indxTP); %1
     FP = length(indxFP); %-1
@@ -32,7 +32,7 @@ function [f, ROCc] = FDR( k, kest )
     f(1) = TP;
     f(2) = FP;
     
-    N_true = length(find(k));
+    N_true = length(find(ktrue));
     ROCc.TPR = TP / N_true;
     ROCc.FPR = FP / (N - max_true_k);
     

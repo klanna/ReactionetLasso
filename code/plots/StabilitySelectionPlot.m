@@ -18,13 +18,14 @@ function StabilitySelectionPlot( M, titlename, iBestNames, FileName, iOptIdx, FD
     for i = 1:NBest
         plot(M_fp(iOptIdx(i)), M_tp(iOptIdx(i)), iBestShapes{1 + mod(i, length(iBestShapes))}, 'color',  MyColor(mod(i, size(MyColor, 1)) + 1, :), 'MarkerSize', MarkerSize*3, 'LineWidth', lwidth*3)
         hold on
-        plot(FDRBest(:, 2), FDRBest(:, 1), iBestShapes{1 + mod(i, length(iBestShapes))}, 'color',  MyColor(mod(i, size(MyColor, 1)) + 1, :), 'MarkerSize', MarkerSize*3, 'LineWidth', lwidth*3)
-        hold on
+%         plot(FDRBest(:, 2), FDRBest(:, 1), iBestShapes{1 + mod(i, length(iBestShapes))}, 'color',  MyColor(mod(i, size(MyColor, 1)) + 1, :), 'MarkerSize', MarkerSize*3, 'LineWidth', lwidth*3)
+%         hold on
     end
     
     m1x = min(M_fp);
+    m2x = min(50, max(M_fp));
+    
     m1y = min(M_tp);
-    m2x = max(M_fp);
     m2y = max(M_tp);
 
     box on
@@ -38,7 +39,7 @@ function StabilitySelectionPlot( M, titlename, iBestNames, FileName, iOptIdx, FD
     StepY = max(1, round((m2y - m1y)/5));
 
     ylim([min(m1y)-1 max(m2y)+1])
-    xlim([min(m1x)-1 min(30, max(m2x)+1)])
+    xlim([min(m1x)-1 max(m2x)+1])
 
     xlabel('False Positive')
     ylabel('True Positive')

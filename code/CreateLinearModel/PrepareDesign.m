@@ -12,7 +12,7 @@ function [indx_I, indx_J, values, N_obs, N_re, RunTimeS, RunTimeSname] = Prepare
     E12(:, 1) = [];
     
     if ~isempty(varargin) 
-        SaveFlag = 1;
+        SaveFlag = varargin{1};
     else
         SaveFlag = 0;
     end
@@ -38,6 +38,8 @@ function [indx_I, indx_J, values, N_obs, N_re, RunTimeS, RunTimeSname] = Prepare
 %% start procedure        
         for l = 1:N_re              
             F = zeros(N_mom, N_T);
+            Fskelet = zeros(N_mom, N_T);
+            
             s = stoich(:, l);
             s_indx = find(s);
             indxOUT = sort(find(s == -1));
@@ -51,6 +53,7 @@ function [indx_I, indx_J, values, N_obs, N_re, RunTimeS, RunTimeSname] = Prepare
             for i = 1:length(s_indx)
                 s_i = s_indx(i);
                 F(s_i, :) = s(s_i)*a_l; % Mean
+                Fskelet(s_i, :) = s(s_i)*ones(size(a_l));
                 
                 if s(s_i) == -1
                     switch length(indxOUT)
@@ -77,36 +80,41 @@ function [indx_I, indx_J, values, N_obs, N_re, RunTimeS, RunTimeSname] = Prepare
                     end
                 end
                 
-                F(N_sp + s_i, :) = a_l + 2*s(s_i)*cv_i;
-                
-                for s_j = 1:N_sp
-                    if s_j ~= s_i
-                        if s(s_j) == -1
-                            switch length(indxOUT)
-                                case 1
-                                    cv_j = V(s_j, :);
-                                case 2
-                                    if s_j == indxOUT(1)
-                                        ii = indxOUT(2);
-                                    else
-                                        ii = indxOUT(1);
-                                    end
-                                    cv_j = E12(E12mapping(s_j, ii), :);
+                if NMom > 1
+                    F(N_sp + s_i, :) = a_l + 2*s(s_i)*cv_i;
+                    Fskelet(N_sp + s_i, :) = ones(size(a_l)) + 2*s(s_i)*ones(size(cv_i));
+
+                    for s_j = 1:N_sp
+                        if s_j ~= s_i
+                            if s(s_j) == -1
+                                switch length(indxOUT)
+                                    case 1
+                                        cv_j = V(s_j, :);
+                                    case 2
+                                        if s_j == indxOUT(1)
+                                            ii = indxOUT(2);
+                                        else
+                                            ii = indxOUT(1);
+                                        end
+                                        cv_j = E12(E12mapping(s_j, ii), :);
+                                end
+                            else
+                                switch length(indxOUT)
+                                    case 1
+                                        cv_j = C(Cmapping(min(s_j, indxOUT(1)), max(s_j, indxOUT(1))), :);
+                                    case 2
+                                        cv_j = C3(C3mapping(s_j, indxOUT(1), indxOUT(2)), :);
+                                end
                             end
-                        else
-                            switch length(indxOUT)
-                                case 1
-                                    cv_j = C(Cmapping(min(s_j, indxOUT(1)), max(s_j, indxOUT(1))), :);
-                                case 2
-                                    cv_j = C3(C3mapping(s_j, indxOUT(1), indxOUT(2)), :);
-                            end
+                            F(2*N_sp + Cmapping(min(s_i, s_j), max(s_i, s_j)), :) = s(s_i)*s(s_j)*a_l + s(s_i)*cv_j + s(s_j)*cv_i;
+                            Fskelet(2*N_sp + Cmapping(min(s_i, s_j), max(s_i, s_j)), :) = s(s_i)*s(s_j)*ones(size(a_l)) + s(s_i)*ones(size(cv_j)) + s(s_j)*ones(size(cv_i));
                         end
-                        F(2*N_sp + Cmapping(min(s_i, s_j), max(s_i, s_j)), :) = s(s_i)*s(s_j)*a_l + s(s_i)*cv_j + s(s_j)*cv_i;
                     end
                 end
             end 
             Feature = reshape(F, [], 1);
-            indxF_i = find(Feature)';
+            FeatureSkelet = reshape(Fskelet, [], 1);
+            indxF_i = find(FeatureSkelet)';
             indxF_j = l*ones(size(indxF_i));
             indx_I = [indx_I indxF_i];
             indx_J = [indx_J indxF_j];
@@ -118,7 +126,7 @@ function [indx_I, indx_J, values, N_obs, N_re, RunTimeS, RunTimeSname] = Prepare
             save(OutFileName, '-v7.3', 'indx_I', 'indx_J', 'values', 'N_obs', 'N_re', 'RunTimeS')
         end
         
-        FormatTime( RunTimeS, 'ConstructDesignMatrix finished in ' );
+%         FormatTime( RunTimeS, 'ConstructDesignMatrix finished in ' );
     else
         load(OutFileName);
     end

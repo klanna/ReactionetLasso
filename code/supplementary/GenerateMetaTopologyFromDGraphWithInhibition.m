@@ -17,44 +17,29 @@ function [stoichAll, ReactionNamesAll] = GenerateMetaTopologyFromDGraphWithInhib
     
     stoichAll = [];
     l = 0;
-    for parent = 1:N_sp
-        children = find(G(parent, :));
-        if ~isempty(children)
-            educts = [];
-            killchild = [];
-
-            for i = 1:length(children)
+    for child = 1:N_sp
+        parents = find(G(:, child)); % get all the parents of a child
+        for i = 1:length(parents)
+            l = l+1;
+            [ ReactionNamesAll{l}, stoichAll(:, l)] = GenerateReactionTopologyX_Y( parents(i), child, SpeciesNames, N_sp);
+            for j = i+1:length(parents)
                 l = l+1;
-                [ ReactionNamesAll{l}, stoichAll(:, l)] = GenerateReactionTopologyX_Y( parent, children(i), SpeciesNames, N_sp);
-            end
-
-            for i = 1:length(children)
-                if find(G(children(i), parent))
-                    educts(end+1) = children(i);
-                    killchild(end+1) = i;
-                end
-            end
-            children(killchild) = [];
-
-            for i = 1:length(educts)
-                ed2 = educts(i);
-                for j = 1:length(children)
-                    
-                    [ ReactionNamesAll{l}, s] = GenerateReactionTopologyXY_Z( parent, ed2, children(j), SpeciesNames, N_sp);
-                    if ~ismember(s, stoichAll', 'rows') && (~all(s == 0))
-                        l = l+1;
-                        stoichAll(:, l) = s;
-                    end
-                end
-                [ ReactionNamesAll{l}, s] = GenerateReactionTopologyXY_Z( parent, ed2, 0, SpeciesNames, N_sp);
-                if ~ismember(s, stoichAll', 'rows') && (~all(s == 0))
-                    l = l+1;
-                    stoichAll(:, l) = s;
-                end
+                [ ReactionNamesAll{l}, stoichAll(:, l)] = GenerateReactionTopologyXY_Z( parents(i), parents(j), child, SpeciesNames, N_sp);
             end
         end
     end
     
+    for parent = 1:N_sp
+        children = find(G(parent, :));
+        for i = 1:length(children)
+            for j = i+1:length(children)
+                l = l+1;
+                [ ReactionNamesAll{l}, stoichAll(:, l)] = GenerateReactionTopologyX_YZ( parent, children(i), children(j), SpeciesNames, N_sp);
+            end
+        end
+    end
+ 
+    stoichAll = unique(stoichAll', 'rows')';
     fprintf('%.3f sec\n', toc(ts));
 end
 
@@ -74,9 +59,9 @@ end
 function [ ReactName, StoichVector] = GenerateReactionTopologyX_YZ( x, y, z, SpeciesNames, N_sp)
 % x + y <- z
     StoichVector = zeros(1, N_sp);
-    StoichVector(x) = 1;
+    StoichVector(x) = -1;
     StoichVector(y) = 1;
-    StoichVector(z) = -1;
+    StoichVector(z) = 1;
     ReactName = GeneratereactionName( SpeciesNames, StoichVector );
 end
 

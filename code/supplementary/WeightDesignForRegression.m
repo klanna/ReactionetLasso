@@ -7,7 +7,7 @@ function [ values, weights ] = WeightDesignForRegression( indx_I, indx_J, values
     
     A = sparse(indx_I, indx_J, values, N_obs, N_re);
     
-    weights = VertVect(full(max(abs(A))));
+    weights = VertVect(full(max(abs(A)))); % best
     clear A
     weights(weights == 0) = 1;
     values = WeightSparseMatrix( indx_J, values, 1 ./ weights);

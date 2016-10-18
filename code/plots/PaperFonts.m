@@ -1,4 +1,4 @@
-FSize = 12;
+FSize = 10;
 % FSize = 6;
 lwidth = 1;
 MarkerSize = 1;

@@ -1,4 +1,4 @@
-function bg = CreateGraphObjScore( AdjMat, NodesProp, TPMat, FPMat, PMat, Blocks )
+function bg = CreateGraphObjScore( AdjMat, NodesProp, TPMat, FPMat, PMat, FNMat, Blocks )
 % create biograph object
     AdjMat1 = AdjMat;
     AdjMat1(find(AdjMat1)) = 1;
@@ -42,6 +42,12 @@ function bg = CreateGraphObjScore( AdjMat, NodesProp, TPMat, FPMat, PMat, Blocks
         end
     end
     
+    if ~isempty([NodesProp.FN])
+        for i = [NodesProp.FN]
+            bg.nodes(i).color = ReactColorFN;
+        end
+    end
+    
     if ~isempty([NodesProp.TP])
         for i = [NodesProp.TP]
             bg.nodes(i).color = ReactColorTP;
@@ -64,6 +70,12 @@ function bg = CreateGraphObjScore( AdjMat, NodesProp, TPMat, FPMat, PMat, Blocks
     for i = 1:length(indx_I)
         EdgesOut = getedgesbynodeid(bg,bg.nodes(indx_I(i)).id,bg.nodes(indx_J(i)).id);
         set(EdgesOut,'LineColor',ReactColorFP, 'LineWidth', AdjMat(indx_I(i), indx_J(i)));
+    end
+    
+    [indx_I, indx_J, ~ ] = find(FNMat);
+    for i = 1:length(indx_I)
+        EdgesOut = getedgesbynodeid(bg,bg.nodes(indx_I(i)).id,bg.nodes(indx_J(i)).id);
+        set(EdgesOut,'LineColor',ReactColorFN, 'LineWidth', AdjMat(indx_I(i), indx_J(i)));
     end
     
 end

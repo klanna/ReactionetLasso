@@ -4,8 +4,8 @@ function [z, history] = LassoADMMlsqr(A, b, weights, lam, varargin)
 % [z, history] = LassoADMMlsqr(A, b, weights, lambda)
     n = size(A, 2);
     rho = 1;
-    TolLASSO = 1e-3;
-    MAX_ITER = 10000;
+    TolLASSO = 1e-4;
+    MAX_ITER = 1000;
     LeftBorder = zeros(n, 1);
 %% 
     for i = 1:length(varargin)
@@ -24,7 +24,7 @@ function [z, history] = LassoADMMlsqr(A, b, weights, lam, varargin)
     tau = 2;      
 % Parameters for lsqr step
     LsqIter = 1000;
-    LsqTol = 1e-5;
+    LsqTol = 1e-4;
 
 %% ADMM solver
 %     fprintf('LassoADMMlsqr started with lambda = %1.1e ...\n', lam);
@@ -35,6 +35,7 @@ function [z, history] = LassoADMMlsqr(A, b, weights, lam, varargin)
     history.status = 'Unsolved';
     
     lambda = lam ./ weights;
+%     lambda = lam;
     lambda(find(LeftBorder)) = 0;
 
     for k = 1:MAX_ITER
@@ -44,7 +45,8 @@ function [z, history] = LassoADMMlsqr(A, b, weights, lam, varargin)
             LsqTol = 1e-4;
         end
         [x, flag, relres, iters] = lsqr([A; sqrt(rho)*speye(n)], [b; sqrt(rho)*(z-u)], LsqTol, LsqIter, [], [], x);
-
+%         x(x < 1e-12) = 0;
+        
         % z-update with relaxation
         zold = z;
         x_hat = alpha*x + (1 - alpha)*zold;
@@ -75,7 +77,7 @@ function [z, history] = LassoADMMlsqr(A, b, weights, lam, varargin)
         end
     end
     
-    z(find(z < 1e-12)) = 0;
+    z(z < 1e-12) = 0;
     history.z = z;
     history.iter = k;
     history.time = toc(tss);

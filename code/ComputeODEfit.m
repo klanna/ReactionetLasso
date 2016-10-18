@@ -8,6 +8,7 @@ function ComputeODEfit( ModelName, varargin )
     FileNameIn = sprintf('%s/StabilitySelection', FolderNames.Results);
     load(sprintf('%s.mat', FileNameIn))
     
+    
     FolderOut = sprintf('%s/ODEfit/', FolderNames.Plots);
     if ~exist(FolderOut, 'dir')
         mkdir(FolderOut)
@@ -15,6 +16,9 @@ function ComputeODEfit( ModelName, varargin )
 
     load(sprintf('%s/%s.mat', FolderNames.Data, FolderNames.PriorTopology));
     load(sprintf('%s/Data.mat', FolderNames.Data), 'Timepoints', 'SpeciesNames')
+    
+    load(sprintf('%s/TrueStruct.mat', FolderNames.Data))
+    kTrue = AnnotateTrueReactions( k, stoichTR, stoich );
     
     for cv = 1:5
         FolderNamesCV = FolderNamesFun( ModelName, cv, ModelParams );
@@ -27,6 +31,7 @@ function ComputeODEfit( ModelName, varargin )
     mE = mean(Ecv, 3);
     StdE = std(Ecv, 0, 3)/ 5;
     
+    [constr, PriorGraph] = ReadConstraints( FolderNames, stoich );
     
     ode0 = mE;
     for i = 1:size(ode0, 1)
@@ -58,8 +63,8 @@ function ComputeODEfit( ModelName, varargin )
     end
     
     n = size(mE, 1)*size(mE, 2);
-    BIC = n*log(ODEdist) + log(n)*card';
-    AIC = n*log(ODEdist) + 2*card';
+    BIC = n*log(ODEdist) + log(n)*card;
+    AIC = n*log(ODEdist) + 2*card;
     
     FileNameOut = sprintf('%s/ComputeODEfit_%s_%s%u_%s_%s', FolderNames.Plots, ModelName, ModelParams.Gradients, 100*ModelParams.p, ModelParams.PriorTopology, ModelParams.Prior);
     M = [VertVect(ODEdist) VertVect(AIC) VertVect(BIC)];
@@ -76,11 +81,13 @@ function ComputeODEfit( ModelName, varargin )
     MakeSBMLfile( FileNameOut, stoich(:, indxPos), xx(indxPos), SpeciesNames, mE(:, 1));
     %% function that performs simulation
     [Simtime, Simdata] = SimulateModelSBML(FileNameOut, Timepoints, mE, StdE);
+    save(sprintf('%s.mat', FileNameOut), 'xx', 'Simtime', 'Simdata')
     %% plot the simulation
     ODEfitPlot( 'BestODEfit', FileNameOut, Simtime, Simdata, Timepoints, mE, StdE, SpeciesNames, 'on');
     ODEfitPlot( 'BestODEfit', FileNameOut, Simtime, Simdata, Timepoints, mE, StdE, SpeciesNames, 'off');
     
     PlotFitToLinearSystem( FolderNames.NMom, b, b_hat(:, i), length(Timepoints)-1, length(SpeciesNames), FileNameOut, 'off');
+    PlotScatterCons( kTrue, xx, 'BestODEfit', FileNameOut, 'off', PriorGraph.indx);
     
     b = b_hat(:, i);
     save(sprintf('%s/BestResponse.mat', FolderNames.Results), 'b')

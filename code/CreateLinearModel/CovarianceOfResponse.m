@@ -6,7 +6,7 @@ function [bStdEps, RunTimeS, RunTimeSName] = CovarianceOfResponse( FolderNames, 
     [N_sp, N_T, Nboot] = size(E);
     ts = tic;
    
-    if ~exist(OutFileName, 'file')
+    if ~exist(OutFileName, 'file') || ~isempty(regexp(FolderNames.Gradients, 'ramsay'))
         indxpos = find(kest);
         for boot = 1:Nboot
             [indx_I, indx_J, values, N_obs, N_re] = PrepareDesign(FolderNames, squeeze(E(:, :, boot)), squeeze(V(:, :, boot)), squeeze(C(:, :, boot)), squeeze(E2(:, :, boot)), squeeze(C3(:, :, boot)), squeeze(E12(:, :, boot)), stoich(:, indxpos));

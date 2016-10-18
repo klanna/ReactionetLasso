@@ -22,6 +22,8 @@ def ReadInputParameters():
 	parser.add_option('-t', '--PriorTopology', dest='PriorTopology', default = 'Topology')
 	parser.add_option('-c', '--connect', dest='connect', default = '')
 	parser.add_option('-l', '--momclose', dest='momclose', default = '')
+	parser.add_option('-i', '--ctime', dest='ctime', type=int, default = 4)
+	parser.add_option('-e', '--cmem', dest='cmem', type=int, default = 4)
 
 	(options, args) = parser.parse_args()
 	return options
@@ -72,6 +74,6 @@ class NamesClass(object):
 		# self.ResultsCV = 'resultsCV/{0}/CV_{1:d}/{4}{2}_{3}/StepStabilitySelection.mat'.format(self.SysName, cv, options.PriorTopology, options.PriorGraph, options.connect)
 		
 		self.Results = 'results/{0}/{3}{1}_{2}{4}/StabilitySelection.mat'.format(self.SysName, options.PriorTopology, options.PriorGraph, options.connect, options.momclose)
-		self.Mem = 6*1028
-		self.Time = 4
+		self.Mem = options.cmem*1028
+		self.Time = options.ctime
 		

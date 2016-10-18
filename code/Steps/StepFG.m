@@ -1,11 +1,11 @@
-function [BestResStat, RunTimeS, RunTimeSname]= StepFG( FolderNames, indx_I, indx_J, values, N_obs, N_re, b, bStdEps, constr, indxPos, stoich)
+function [BestResStat, RunTimeS, RunTimeSname]= StepFG( FolderNames, indx_I, indx_J, values, N_obs, N_re, b, bStdEps, constr, indxPos, stoich, kTrue, N_T)
     RunTimeSname = 'StepFG';
     fprintf('----------------%s----------------\n', RunTimeSname);
     OutFolder = sprintf('%s/', FolderNames.ResultsCV);
     OutFileName = sprintf('%s/%s.mat', OutFolder,RunTimeSname);
     
     ts = tic;
-    if ~exist(OutFileName, 'file')
+    if ~exist(OutFileName, 'file') || ~isempty(regexp(FolderNames.Gradients, 'ramsay'))
         
     %% normalize design and response
         [ values, weights ] = WeightDesignForRegression( indx_I, indx_J, values, N_obs, N_re ); %  weight design
@@ -17,7 +17,8 @@ function [BestResStat, RunTimeS, RunTimeSname]= StepFG( FolderNames, indx_I, ind
         x(indxPos) = lsq_step(Aw(:, indxPos), b, weights(indxPos), constrW(indxPos)); % old version   
         save(OutFileName, 'x');
     %%
-        BestResStat.b_hat  = (Aw*(x .* weights)).*bStdEps; 
+        BestResStat.b_hat  = (Aw*(x .* weights)).*bStdEps;
+        BestResStat.mse  = sum((b.*bStdEps - BestResStat.b_hat).^2);
         
         if strcmp(FolderNames.connect, 'connected') 
             BestResStat.xOriginal = CheckConnected( stoich, x );
@@ -29,6 +30,12 @@ function [BestResStat, RunTimeS, RunTimeSname]= StepFG( FolderNames, indx_I, ind
         RunTimeS = toc(ts);
         save(OutFileName, '-append', 'BestResStat', 'RunTimeS');    
         FormatTime( RunTimeS, 'finished in ' );
+        
+        if any(kTrue)
+            PlotScatterCons( kTrue, BestResStat.xOriginal, RunTimeSname, sprintf('%s/%s', FolderNames.PlotsCV, RunTimeSname), 'on');
+        end
+        PlotFitToLinearSystem( FolderNames.NMom, b, BestResStat.b_hat, N_T, size(stoich, 1), sprintf('%s/%s', FolderNames.PlotsCV, RunTimeSname), 'off');
+        
     else
         RunTimeS = toc(ts);
         load(OutFileName)
@@ -52,10 +59,14 @@ function b_new = RelErrCorr(b, b_hat, w)
 end
 
 function x = lsq_step(A, bH, weights, constrW)
-    x = LassoADMMlsqr(A, bH, weights, 0, constrW) ./ weights ;
-%     [x, flag, relres, iters] = lsqr(A, bH, 1e-4, 10000);
-    x  = constrW ./ weights + VertVect(LSQstep( A, bH - A*constrW, x .* weights )) ./ weights;
-    x(x < 1e-12) = 0;
+    xW = LassoADMMlsqr(A, bH, weights, 0, constrW) ./ weights ;
+    xW(xW < 1e-13) = 0;
+    
+    x  = constrW ./ weights + VertVect(LSQstep( A, bH - A*constrW, xW  )) ./ weights;
+%     
+    x(x < 1e-10) = 0;
+        
+    
 end
 
 

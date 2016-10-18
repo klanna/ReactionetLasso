@@ -20,7 +20,7 @@ function CompareTrueFalsePos( A, titlename, LegendNames, FileName)
     end
 
     figname = 'CompareTrueFalsePos';
-    fig = figure('Name', figname, 'visible', 'off');
+    fig = figure('Name', figname, 'visible', 'on');
     for i = 1:Nsubplots
         subplot(1, Nsubplots, i)
         MM = A{i};

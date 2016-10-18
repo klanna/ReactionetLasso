@@ -34,13 +34,13 @@ function FDRscore = ReactionetLassoPlots( PlotType, ModelName, varargin )
             FName = sprintf('%s/%s', FolderNames.ResultsCV, StepName);
             load(sprintf('%s.mat', FName));    
             PlotScatterCons( kTrue, BestResStat.xOriginal, StepName, sprintf('%s/%s', FolderNames.PlotsCV, StepName), pic);
-%             PlotFitToLinearSystem( FolderNames.NMom, b, BestResStat.b_hat, N_T, N_sp, sprintf('%s/%s', FolderNames.PlotsCV, StepName), pic);
+            PlotFitToLinearSystem( FolderNames.NMom, b, BestResStat.b_hat, N_T, N_sp, sprintf('%s/%s', FolderNames.PlotsCV, StepName), pic);
 
             StepName = 'StepFG';
             FName = sprintf('%s/%s', FolderNames.ResultsCV, StepName);
             load(sprintf('%s.mat', FName));    
             PlotScatterCons( kTrue, BestResStat.xOriginal, StepName, sprintf('%s/%s', FolderNames.PlotsCV, StepName), pic);
-%             PlotFitToLinearSystem( FolderNames.NMom, b, BestResStat.b_hat, N_T, N_sp, sprintf('%s/%s', FolderNames.PlotsCV, StepName), pic);
+            PlotFitToLinearSystem( FolderNames.NMom, b, BestResStat.b_hat, N_T, N_sp, sprintf('%s/%s', FolderNames.PlotsCV, StepName), pic);
         end
         
         StepName = 'StepLASSO';
@@ -61,33 +61,51 @@ function FDRscore = ReactionetLassoPlots( PlotType, ModelName, varargin )
 %         BE{nset} = FDRscoreBE;
 %         clear FDRscore
     end
+    
     A{1} = AA;
-%     
+%   
+    load(sprintf('%s/ReactionFrequency.mat', FolderNames.Results))
+    
+    UniqueXscore = sort(unique(xscore), 'descend'); 
+    NreUni = length(UniqueXscore);
+        
+    for i = 1:NreUni
+        x0 = zeros(length(kTrue), 1);
+        idx = find(xscore >= UniqueXscore(i));
+        x0(ReNumList(idx)) = 1;
+        FDRscore(i, :) = FDR(kTrue, x0);
+    end
+    
+    A{2} = {FDRscore};
+    titlename{2} = 'Reaction Frequency';
+    LegendNames{2} = {};
+
+    %%
     [~, PriorGraph] = ReadConstraints( FolderNames, stoich );
     
     load(sprintf('%s/StabilitySelection.mat', FolderNames.Results))
     for i = 1:size(x, 2)
         FDRscore(i, :) = FDR(kTrue, x(:, i));
     end
+    
     for i = 1:length(ScoreFunctionNameList)
         FDRscoreOpt(i, :) = FDR(kTrue, xOpt(:, i));
     end
     
-    A{2} = {FDRscore};
-    titlename{2} = 'Stability Selection';
-    LegendNames{2} = {};
+    A{3} = {FDRscore};
+    titlename{3} = 'Stability Selection';
+    LegendNames{3} = {};
+    
+    FileName = sprintf('%s/CVandStabilitySelection', FolderNames.Plots);
+    FdrCVandFreq( A, titlename, LegendNames, FileName);
     
 %     A{3} = BE;
 %     titlename{3} = 'BE';
 %     LegendNames{3} = {};
     
-    FileName = sprintf('%s/CVandStabilitySelection', FolderNames.Plots);
-    CompareTrueFalsePos( A, titlename, LegendNames, FileName);
     
-    load(sprintf('%s/ReactionFrequency.mat', FolderNames.Results));
-    
-    ResScore = zeros(size(stoich, 2), 1);
-    ResScore(ReNumList) = xscore;
+    ResScore0 = zeros(size(stoich, 2), 1);
+    ResScore0(ReNumList) = xscore;
     
     indx_k = find(kTrue);
     
@@ -107,47 +125,95 @@ function FDRscore = ReactionetLassoPlots( PlotType, ModelName, varargin )
     ROCPlot( {ROCscore}, ModelName, FileName, {sprintf('%s %s, p = %.2f', ModelParams.Gradients, ModelParams.connect, ModelParams.p)});
     
     
-    if strcmp(PlotType, 'all')
-        for i = 1:length(ScoreFunctionNameList)
-            OptName = ScoreFunctionNameList{i};
-            FName = sprintf('%s/%s_%s', FolderNames.Plots, OptName, ModelName);
-            PlotScatterCons( kTrue, xOpt(:, i), OptName, FName, pic, PriorGraph.indx);
+    for i = 1:length(ScoreFunctionNameList)
+        OptName = ScoreFunctionNameList{i};
+        FName = sprintf('%s/%s_%s', FolderNames.Plots, OptName, ModelName);
+        PlotScatterCons( kTrue, xOpt(:, i), '', FName, pic, PriorGraph.indx);
+        PlotScatterCons_off( kTrue, xOpt(:, i), '', FName, pic, PriorGraph.indx);
 
-            indxPos = find(xOpt(:, i));
+        indxPos = find(xOpt(:, i));
 
-            PriorListIndx = [PriorGraph.indx];
-            if ~isempty(PriorListIndx)
-                for p = 1:length(PriorListIndx)
-                    PriorList(p) = find(indxPos == PriorListIndx(p));
-                end
-            else
-                PriorList = [];
+        PriorListIndx = [PriorGraph.indx];
+        if ~isempty(PriorListIndx)
+            for p = 1:length(PriorListIndx)
+                PriorList(p) = find(indxPos == PriorListIndx(p));
             end
-
-            FPList = [];
-            FPList0 = setdiff(indxPos, indx_k);
-            for j = 1:length(FPList0)
-                FPList(j) = find(indxPos == FPList0(j));
-            end
-
-            TPList = [];
-            TPList0 = setdiff(indxPos, FPList0);
-            for j = 1:length(TPList0)
-                TPList(j) = find(indxPos == TPList0(j));
-            end
-            
-            BlockFile = sprintf('%s/Blocks.mat', FolderNames.Data);
-            
-            if exist(BlockFile)
-                load(BlockFile)                
-            else
-                Blocks = ones(length(SpeciesNames), 1);
-            end
-            
-            PrintGraphWithScore( FName, stoich(:, indxPos), SpeciesNames, TPList, FPList, PriorList, ResScore(indxPos), Blocks );
-            
-            clear FPList TPList PriorList
+        else
+            PriorList = [];
         end
+
+        [TPList, FPList, FNList] = FDRList(indx_k, xOpt(:, i));
+        indxPos = sort([VertVect(TPList); VertVect(FPList); VertVect(FNList)]);
+        
+        BlockFile = sprintf('%s/Blocks.mat', FolderNames.Data);
+        if exist(BlockFile)
+            load(BlockFile)                
+        else
+            Blocks = ones(length(SpeciesNames), 1);
+        end
+        
+        ResScore = zeros(size(stoich, 2), 1);
+        ResScore(TPList) = ResScore0(TPList);
+        ResScore(FPList) = ResScore0(FPList);
+        ResScore(FNList) = min(xscore)/10;
+        PrintGraphWithScore( FName, stoich, SpeciesNames, TPList, FPList, PriorList, ResScore, Blocks, FNList);
+
+        clear FPList TPList PriorList
+    end
+    
+    %% corner solutions
+    [ idx ] = FindCornerSolutions( FDRscore );
+    
+    for i = 1:length(idx)
+        OptName = sprintf('C%u', i);
+        FName = sprintf('%s/%s_%s', FolderNames.Plots, OptName, ModelName);
+        xO = x(:, idx(i));
+        PlotScatterCons( kTrue, xO, OptName, FName, pic, PriorGraph.indx);
+
+        indxPos = find(xO);
+
+        PriorListIndx = [PriorGraph.indx];
+        if ~isempty(PriorListIndx)
+            for p = 1:length(PriorListIndx)
+                PriorList(p) = find(indxPos == PriorListIndx(p));
+            end
+        else
+            PriorList = [];
+        end
+
+        [TPList, FPList, FNList] = FDRList(indx_k, xO);
+        indxPos = sort([VertVect(TPList); VertVect(FPList); VertVect(FNList)]);
+        
+        BlockFile = sprintf('%s/Blocks.mat', FolderNames.Data);
+        if exist(BlockFile)
+            load(BlockFile)                
+        else
+            Blocks = ones(length(SpeciesNames), 1);
+        end
+        
+        ResScore = zeros(size(stoich, 2), 1);
+        ResScore(TPList) = ResScore0(TPList);
+        ResScore(FPList) = ResScore0(FPList);
+        ResScore(FNList) = min(xscore)/10;
+        PrintGraphWithScore( FName, stoich, SpeciesNames, TPList, FPList, PriorList, ResScore, Blocks, FNList);
+%         
+%         FileNameOut = sprintf('%s/ComputeODEfit_%s_%s%u_%s_%s_%s', FolderNames.Plots, ModelName, ModelParams.Gradients, 100*ModelParams.p, ModelParams.PriorTopology, ModelParams.Prior, OptName);
+%         MakeSBMLfile( FileNameOut, stoich(:, indxPos), xO(indxPos), SpeciesNames, mE(:, 1));
+%         %% function that performs simulation
+%         [Simtime, Simdata] = SimulateModelSBML(FileNameOut, Timepoints, mE, StdE);
+%         %% plot the simulation
+%         ODEfitPlot( 'BestODEfit', FileNameOut, Simtime, Simdata, Timepoints, mE, StdE, SpeciesNames, 'on');
+%         ODEfitPlot( 'BestODEfit', FileNameOut, Simtime, Simdata, Timepoints, mE, StdE, SpeciesNames, 'off');
+    
+        clear FPList TPList PriorList
     end
 end
 
+function [TPList, FPList, FNList] = FDRList(indx_k, x)
+    indxPos = find(x); % idx of positive reactions
+    
+    FPList = setdiff(indxPos, indx_k);
+    TPList = setdiff(indxPos, FPList);
+    FNList = setdiff(indx_k, TPList);
+
+end

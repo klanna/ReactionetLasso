@@ -4,7 +4,7 @@ function kTrue = AnnotateTrueReactions( k, stoichTR, stoich )
     N_tr = length(k);
     for i = 1:N_tr
         s = stoichTR(:, i);
-        [~,indx]=ismember(s',stoich','rows');
+        [~,indx]=ismember(s', stoich', 'rows');
         if indx
             kTrue(indx) = k(i);
         end

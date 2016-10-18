@@ -14,7 +14,9 @@ function [stoich, RunTimeS, RunTimeName ] = PrepareTopology( FolderNames )
             stoich = GenerateMetaTopology(SpeciesNames, CompartmentList);
             save(FileName, 'stoich', 'RunTimeS')
         elseif strcmp(FolderNames.PriorTopology, 'Topology')
-            stoich = GenerateMetaTopologyFromGraph(SpeciesNames);
+            N_sp = length(SpeciesNames);
+            G = ones(N_sp, N_sp);
+            stoich = GenerateMetaTopologyFromDGraphWithInhibition(SpeciesNames, G);
             RunTimeS = 0;
             save(FileName, 'stoich', 'RunTimeS')
             

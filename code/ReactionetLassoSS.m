@@ -1,4 +1,5 @@
 function ReactionetLassoSS( ModelName, varargin )
+    fprintf('ReactionetLassoSS\n');
     fpath = regexprep(pwd, 'ReactionetLasso/.*', 'ReactionetLasso/'); % path to the code-folder
     addpath(genpath(sprintf('%s/code/', fpath))); % add code directory to matlab path
     
@@ -9,11 +10,12 @@ function ReactionetLassoSS( ModelName, varargin )
     if ~exist(FolderNames.Plots, 'dir')
        mkdir(FolderNames.Plots) 
     end
+    % addpath(genpath(sprintf('%s/fdaM/', fpath)));
     
     [xscore, ReNumList] = GetScore( FolderNames, ModelParams );
 %     [xscore, ReNumList] = GetScoreSS( FolderNames, ModelParams );
     
-    [x, b_hat, ScoreFunctionNameList, mse, AIC, BIC, card, RunTimeS, RunTimeSname] = StabilitySelection( FolderNames, ModelParams, ReNumList, xscore);
+    [x, b_hat, ScoreFunctionNameList, mse, AIC, BIC, card, RunTimeS, RunTimeSname] = StabilitySelection2( FolderNames, ModelParams, ReNumList, xscore);
     
     PlotComputationTime( FolderNames.Results, ModelName, RunTimeS, RunTimeSname);
     
@@ -50,11 +52,15 @@ function ReactionetLassoSS( ModelName, varargin )
         else
             Blocks = ones(length(SpeciesNames), 1);
         end
-        PrintGraphWithScore( filename, stoich(:, indxPos), SpeciesNames, [1:N_re], [], PriorList, ResScore(indxPos), Blocks );
+        PrintGraphWithScore( filename, stoich(:, indxPos), SpeciesNames, [1:N_re], [], PriorList, ResScore(indxPos), Blocks, []);
     end
     
     SimulateODEfit( ModelName, varargin );
-    ComputeODEfit( ModelName, varargin );
+    
+    try
+        ComputeODEfit( ModelName, varargin );
+    catch
+    end
     
     if exist(sprintf('%s/TrueStruct.mat', FolderNames.Data), 'file')
 		ReactionetLassoPlots( 'all', ModelName, varargin );

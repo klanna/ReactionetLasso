@@ -1,7 +1,7 @@
 function FDRPlot( MM, titlename, FileName, legendnames, varargin)
     fprintf('FDRPlot\n');
     PaperFonts
-    FSize = 20;
+    FSize = 10;
 
     iBestShapes = {'o', 's', '+'};
     

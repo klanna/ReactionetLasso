@@ -3,15 +3,15 @@ function [ indx ] = SelectOptimalSolution( IC, varargin )
 % Imformation Criteria
 % INPUT:
 % IC - vecotr o values of Information Criteria
-% optional: Number of optimal values to output (default = 3)
+% optional: Number of optimal values to output (default = 2)
 % OUTPUT:
 % indx - indeces of best solutions
-    dIC = -diff(IC);
+    dIC = VertVect(-diff(IC))';
     % check if IC is monotoneously decreasing 
     if ~isempty(varargin)
         Nindx = varargin{1};
     else
-        Nindx = 3;
+        Nindx = 2;
     end
     
     [~, indx] = min(IC);

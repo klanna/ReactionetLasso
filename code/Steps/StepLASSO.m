@@ -1,10 +1,10 @@
-function [StatLassoLL, RunTimeS, RunTimeSname] = StepLASSO( FolderNames, indx_I, indx_J, values, N_obs, N_re, N_sp, b, bStdEps, constr, BestResStat, prior_indx )
+function [StatLassoLL, RunTimeS, RunTimeSname] = StepLASSO( FolderNames, indx_I, indx_J, values, N_obs, N_re, N_sp, b, bStdEps, constr, BestResStat, prior_indx, kTrue)
     ts = tic;
     RunTimeSname = 'StepLASSO';
     fprintf('----------------%s----------------\n', RunTimeSname);
     OutFolder = sprintf('%s/', FolderNames.ResultsCV);
     OutFileName = sprintf('%s/%s.mat', OutFolder,RunTimeSname);
-    if ~exist(OutFileName, 'file')
+%     if ~exist(OutFileName, 'file')
         x1 = VertVect([BestResStat.xOriginal]);
         x1(prior_indx) = 1;
     %% shorten design A
@@ -30,6 +30,8 @@ function [StatLassoLL, RunTimeS, RunTimeSname] = StepLASSO( FolderNames, indx_I,
 
             xOri = zeros(N_reOri, 1);
             xOri(indxPos) = xCorrect;
+            xOri(xOri < 1e-12) = 0;
+            
             StatLassoLL(i).r  = (Aw*xCorrectW).*bStdEps;
             StatLassoLL(i).rss = sum(abs(b.*bStdEps - [StatLassoLL(i).r]).^2);
 
@@ -41,7 +43,14 @@ function [StatLassoLL, RunTimeS, RunTimeSname] = StepLASSO( FolderNames, indx_I,
                 fname = sprintf('lambda_log_%.0f', log(StatLassoLL(i).lambda));
             else
                 fname = sprintf('lambda_0');
-            end        
+            end    
+            
+            if any(kTrue)
+                f(i, :) = FDR(kTrue, xOri);
+                StatLassoLL(i).fdr = f(i, :);
+                
+                fprintf('TP = %u,\tFP = %u\n', f(i, 1), f(i, 2));
+            end
     %         StatLassoLL(i).ODEdist = ModelSBML( ResFolder, fname, xOri, stoich, SpeciesNames, initialAmount, Timepoints, mean(E, 3), std(E, 0, 3), pic);  
             %% regression IC
             [StatLassoLL(i).AIC_reg, StatLassoLL(i).BIC_reg, StatLassoLL(i).cPm_reg] = ICfunc(StatLassoLL(i).rss, StatLassoLL(i).card, N_obs, Sigma2);
@@ -49,9 +58,13 @@ function [StatLassoLL, RunTimeS, RunTimeSname] = StepLASSO( FolderNames, indx_I,
         RunTimeS = toc(ts);
         save(OutFileName, 'StatLassoLL', 'RunTimeS');
         FormatTime( RunTimeS, 'finished in ' );
-    else
-        load(OutFileName)
-    end
+        
+        if any(kTrue)
+            LassoPlot( f, sprintf('%s/%s', FolderNames.PlotsCV, RunTimeSname));
+        end
+%     else
+%         load(OutFileName)
+%     end
 end
 
 function [AIC, BIC, cPm] = ICfunc(ll, df, N, S)

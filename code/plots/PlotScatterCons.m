@@ -26,7 +26,7 @@ function PlotScatterCons( ktrue, kest, kest_name, FileName, pic, varargin)
     logTRUE = log10(ReplaceZero(ktrue, 10^log10Zero)); % replace 0 with log10 of the smallest element
     logEST = log10(ReplaceZero(kest, 10^log10Zero)); 
     
-    xindx = [log10Zero:round(max([logTRUE; logEST]))];
+    xindx = [log10Zero:2:round(max([logTRUE; logEST]))];
     
     xName{1} = '-inf';
     for i = 2:length(xindx)
@@ -106,7 +106,7 @@ function PlotScatterCons( ktrue, kest, kest_name, FileName, pic, varargin)
     set(get(gca,'title'),'FontSize', FSize, 'FontWeight', 'Bold');
     
     if ~isempty(FileName)
-        PDFprint(strcat(FileName, '_', figname),  fig, 4, 5);
+        PDFprint(strcat(FileName, '_', figname),  fig, 3.5, 3.5);
     end
 end
 

@@ -6,6 +6,8 @@ function [xOpt, b_hat, ScoreFunctionNameList, mse, AIC, BIC, card, RunTimeS, Run
         load(sprintf('%s/Data.mat', FolderNames.Data), 'Timepoints', 'SpeciesNames')
         N_re = size(stoich, 2);
         [constr, PriorGraph] = ReadConstraints( FolderNames, stoich );
+        
+        %% perfrom cross-validation
         Ncv = 5;
         for cv = 1:Ncv
             FolderNamesCV = FolderNamesFun( FolderNames.ModelName, cv, ModelParams );
@@ -13,7 +15,7 @@ function [xOpt, b_hat, ScoreFunctionNameList, mse, AIC, BIC, card, RunTimeS, Run
             load(sprintf('%s/Design.mat', FolderNamesCV.LinSystem))
             load(sprintf('%s/Covar.mat', FolderNamesCV.LinSystem))
             load(sprintf('%s/%s_ComputationTime.mat', FolderNamesCV.ResultsCV, FolderNames.ModelName))
-            RunTimeScv(cv, :) = RunTimeS;
+            RunTimeScv(cv, :) = mean(RunTimeS);
             
             if exist('bStdEpsM', 'var')
                 [ bCV{cv}, ~, values ] = NoiseNormalization( bStdEpsM, b, indx_I, values);

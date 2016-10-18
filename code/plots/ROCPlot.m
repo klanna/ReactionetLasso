@@ -8,7 +8,7 @@ function ROCPlot( MM, titlename, FileName, legendnames, varargin)
     size2 = size1;
 
     figname = 'ROCplot';
-    fig = figure('Name', figname, 'visible', 'on');
+    fig = figure('Name', figname, 'visible', 'off');
     
     m2x = 0;
     m2y = 0;

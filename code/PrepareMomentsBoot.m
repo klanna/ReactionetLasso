@@ -25,7 +25,7 @@ function [ Eb, Vb, Cb, E2b, C3b, E12b, RunTimeS ] = PrepareMomentsBoot( boot, Mo
     % LOAD DATA
     
     ts = tic;
-    if boot == 1
+    if (boot == 1) && nset
         for t = 1:length(Timepoints)
             Trajectories = dataVal{t};
             [ E(:, t), V(:, t), C(:, t), E2(:, t), C3(:, t), E12(:, t) ] = PrepareMomentsFromTrajectories( Trajectories, boot );

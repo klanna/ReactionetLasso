@@ -8,6 +8,7 @@ function SimulateODEfit( ModelName, varargin )
     FileNameIn = sprintf('%s/StabilitySelection', FolderNames.Results);
     load(sprintf('%s.mat', FileNameIn))
     
+    
     FolderOut = sprintf('%s/ODEfit/', FolderNames.Plots);
     if ~exist(FolderOut, 'dir')
         mkdir(FolderOut)
@@ -33,6 +34,7 @@ function SimulateODEfit( ModelName, varargin )
         MakeSBMLfile( FileNameOut, stoich(:, indxPos), x(indxPos), SpeciesNames, mE(:, 1));
         %% function that performs simulation
         [Simtime, Simdata] = SimulateModelSBML(FileNameOut, Timepoints, mE, StdE);
+        save(FileNameOut, 'Simtime', 'Simdata')
         %% plot the simulation
         ODEfitPlot( ScoreFunctionNameList{i}, FileNameOut, Simtime, Simdata, Timepoints, mE, StdE, SpeciesNames, 'on');
         ODEfitPlot( ScoreFunctionNameList{i}, FileNameOut, Simtime, Simdata, Timepoints, mE, StdE, SpeciesNames, 'off');

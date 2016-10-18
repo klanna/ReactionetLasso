@@ -4,7 +4,7 @@ function MergeDatasets( DatasetNamesList, ModelName, ValidationSet, varargin )
     fpath = regexprep(pwd, 'ReactionetLasso/.*', 'ReactionetLasso/'); % path to the code-folder
     addpath(genpath(sprintf('%s/code/', fpath))); % add code directory to matlab path
     ModelParams = ReadInputParameters( varargin ); % identify default settings
-    
+        
     for nset = 1:5   
         FolderNamesOut = FolderNamesFun( ModelName, nset, ModelParams );
         FolderNamesVal = FolderNamesFun( ValidationSet, nset, ModelParams );
@@ -50,9 +50,11 @@ function MergeDatasets( DatasetNamesList, ModelName, ValidationSet, varargin )
         if exist(sprintf('%s/TrueStruct.mat', FolderNames.Data), 'file')
             copyfile( sprintf('%s/TrueStruct.mat', FolderNames.Data), sprintf('%s/TrueStruct.mat', FolderNamesOut.Data) );
         end
-        copyfile(sprintf('%s/%s.mat', FolderNames.Data, FolderNames.PriorTopology), sprintf('%s/%s.mat', FolderNamesOut.Data, FolderNamesOut.PriorTopology))
-        copyfile(sprintf('%s/%s_ComputationTime.mat', FolderNames.ResultsCV, FolderNames.ModelName), sprintf('%s/%s_ComputationTime.mat', FolderNamesOut.ResultsCV, FolderNamesOut.ModelName))
-        copyfile(sprintf('%s/ValidationSet.mat', FolderNamesVal.Moments), sprintf('%s/ValidationSet.mat', FolderNamesOut.Moments))
+        copyfile(sprintf('%s/%s.mat', FolderNamesVal.Data, FolderNamesVal.PriorTopology), sprintf('%s/%s.mat', FolderNamesOut.Data, FolderNamesOut.PriorTopology))
+        copyfile(sprintf('%s/%s_ComputationTime.mat', FolderNamesVal.ResultsCV, FolderNamesVal.ModelName), sprintf('%s/%s_ComputationTime.mat', FolderNamesOut.ResultsCV, FolderNamesOut.ModelName))
+        copyfile(sprintf('%s/ValidationSet_cv%u.mat', FolderNamesVal.Data, nset), sprintf('%s/ValidationSet_cv%u.mat', FolderNamesOut.Data, nset))
+        copyfile(sprintf('%s/TrainingSet_Nb%u_cv%u.mat', FolderNamesVal.Data, FolderNamesVal.Nboot, FolderNames.CV), sprintf('%s/TrainingSet_Nb%u_cv%u.mat', FolderNamesOut.Data, FolderNamesOut.Nboot, FolderNamesOut.CV))
+        copyfile(sprintf('%s/TrainingSet_Nb%u_cv%u.mat', FolderNamesVal.Data, FolderNamesVal.Nboot, 0), sprintf('%s/TrainingSet_Nb%u_cv%u.mat', FolderNamesOut.Data, FolderNamesOut.Nboot, 0))
         
         [N_obs, N_re] = size(A);
         [indx_I, indx_J, values] = find(A);
@@ -82,7 +84,7 @@ function MergeDatasets( DatasetNamesList, ModelName, ValidationSet, varargin )
         save(sprintf('%s/Covar.mat', FolderNamesOut.LinSystem), 'bStdEpsM', 'bStdEps')
         save(sprintf('%s/Data.mat', FolderNamesOut.Data), 'SpeciesNames', 'Timepoints', 'TimepointsAll')
     end
-    ReactionetLassoSS( ModelName, varargin );
+    ReactionetLassoSSmerge( ModelName, varargin );
     MergeDatasetsStabilitySelection( DatasetNamesList, ModelName, varargin);
 end
 

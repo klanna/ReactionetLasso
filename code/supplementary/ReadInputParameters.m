@@ -37,7 +37,7 @@ function ModelParams = ReadInputParameters( varargin )
                     end
                 case 'char'
                     switch tmp
-                        case {'FDS', 'splines', 'splines2', 'smooth', 'adaptive'}
+                        case {'FDS', 'splines', 'splines2', 'splinessm', 'smooth', 'adaptive', 'bsplines4', 'perfect', 'ramsayOLS', 'ramsayFG'}
                             ModelParams.Gradients = tmp;    
                         case {'close0', 'closegauss'}
                             ModelParams.MomentClosure = tmp;

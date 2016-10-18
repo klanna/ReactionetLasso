@@ -1,16 +1,156 @@
-nohup ./ReactionetLasso.py -m RealTIA5bn100k17tp2 -p 0.05 -o 2 -g splines2 -c connected -t PriorTopology1 -a PriorStoich1 &
+bsub -n 2 -e ../JOBS/BM_lsq1_ARS_ERR.txt -o ../JOBS/BM_lsq1_ARS_OUT.txt -W "4:00" -R "rusage[mem=4048]" matlab -singleCompThread -nodisplay -r BruntonMethod2"('lassoLSQ', 'ARS3rep100kDT14sp14tp5bn', 0.05, 1)"
+bsub -n 2 -e ../JOBS/BM_lsq_ARS_ERR.txt -o ../JOBS/BM_lsq_ARS_OUT.txt -W "4:00" -R "rusage[mem=4048]" matlab -singleCompThread -nodisplay -r BruntonMethod2"('lassoLSQ', 'ARS3rep100kDT14sp14tp5bn', 0.05)"
+
+bsub -n 2 -e ../JOBS/BM_lsq1_ARS_ERR.txt -o ../JOBS/BM_lsq1_ARS_OUT.txt -W "4:00" -R "rusage[mem=4048]" matlab -singleCompThread -nodisplay -r BruntonMethod2"('lassoLSQ', 'ARS5rep100kDT14sp14tp5bn', 0.05, 1)"
+bsub -n 2 -e ../JOBS/BM_lsq_ARS_ERR.txt -o ../JOBS/BM_lsq_ARS_OUT.txt -W "4:00" -R "rusage[mem=4048]" matlab -singleCompThread -nodisplay -r BruntonMethod2"('lassoLSQ', 'ARS5rep100kDT14sp14tp5bn', 0.05)"
+
+bsub -n 2 -e ../JOBS/BM_lsq1_ARS_ERR.txt -o ../JOBS/BM_lsq1_ARS_OUT.txt -W "4:00" -R "rusage[mem=4048]" matlab -singleCompThread -nodisplay -r BruntonMethod2"('lassoLSQ', 'ARS4rep100kDT14sp14tp5bn', 0.05, 1)"
+bsub -n 2 -e ../JOBS/BM_lsq_ARS_ERR.txt -o ../JOBS/BM_lsq_ARS_OUT.txt -W "4:00" -R "rusage[mem=4048]" matlab -singleCompThread -nodisplay -r BruntonMethod2"('lassoLSQ', 'ARS4rep100kDT14sp14tp5bn', 0.05)"
+
+nohup ./ReactionetLasso.py -m 20150728TRAILHeLa4 -p 0.05 -o 2 -g splines -t PriorTopology1 -a PriorStoich1 &
+nohup ./ReactionetLasso.py -m 20150728TRAILHeLa4 -p 0.05 -o 2 -g splines -a PriorStoich1 &
+
+nohup ./ReactionetLasso.py -m TIA6b100kUT58sp33tp5bn -p 0.05 -o 2 -g splines -i 120 -e 8 -t PriorTopologyODE &
+
+nohup ./ReactionetLasso.py -m TIA6b100kUT58sp33tp5bn -p 0.05 -o 2 -g splines -i 120 -e 8 -t PriorTopologyFG &
+nohup ./ReactionetLasso.py -m TIA6b100kUT58sp33tp5bn -p 0.05 -o 2 -a PriorGraph_502 -g splines  -i 120 -e 8 &
+nohup ./ReactionetLasso.py -m TIA6b100kUT58sp33tp5bn -p 0.05 -o 2 -a PriorGraph_0 -g splines  -i 120 -e 8 &
+
+nohup ./ReactionetLasso.py -m ARS100kDT14sp15tp5bn -p 0.05 -o 2 -g splines &
+nohup ./ReactionetLasso.py -m ARS100kDT14sp15tp5bn -p 0.05 -o 2 -g splines -a PriorGraph_0 &
+nohup ./ReactionetLasso.py -m ARS100kDT14sp15tp5bn -p 0.05 -o 2 -g splines -a PriorGraph_501 &
+nohup ./ReactionetLasso.py -m ARS100kDT14sp15tp5bn -p 0.05 -o 2 -g splines -a PriorGraph_101 &
+nohup ./ReactionetLasso.py -m ARS100kDT14sp15tp5bn -p 0.05 -o 2 -g splines -a PriorGraph_502 &
+nohup ./ReactionetLasso.py -m ARS100kDT14sp15tp5bn -p 0.05 -o 2 -g splines -a PriorGraph_102 &
+
+
+nohup ./ReactionetLasso.py -m ARS1rep100kDT14sp14tp5bn -p 0.05 -o 2 -g splines  &
+nohup ./ReactionetLasso.py -m ARS1rep100kDT14sp14tp5bn -p 0.05 -o 2 -g splines -t PriorTopologyFG &
+nohup ./ReactionetLasso.py -m ARS1rep100kDT14sp14tp5bn -p 0.05 -o 2 -g splines -t PriorTopologyODE &
+
+
+
+
+nohup ./ReactionetLasso.py -m ARS1rep100kDT14sp14tp -p 0 -o 2 -g splines &
+nohup ./ReactionetLasso.py -m ARS1rep100kDT14sp14tp5bn -p 0.05 -o 2 -g splines &
+
+nohup ./ReactionetLasso.py -m ARS1rep100kDT14sp14tp -p 0 -o 2 -g splines -a PriorGraph_0 &
+nohup ./ReactionetLasso.py -m ARS1rep100kDT14sp14tp5bn -p 0.05 -o 2 -g splines &
+nohup ./ReactionetLasso.py -m ARS1rep100kDT14sp14tp5bn -p 0.05 -o 2 -g splines -a PriorGraph_0 &
+
+nohup ./ReactionetLasso.py -m TIA6b100kUT58sp33tp5bn -p 0.05 -o 2 -a PriorGraph_501 -g splines &
+nohup ./ReactionetLasso.py -m TIA6b100kUT58sp33tp5bn -p 0.05 -o 2 -g splines &
+
+
+
+nohup ./ReactionetLasso.py -m ARS1rep100kDT14sp14tp5bn -p 0.05 -o 2 -g ramsayFG &
+nohup ./ReactionetLasso.py -m ARS1rep100kDT14sp14tp5bn -p 0.05 -o 1 -g ramsayFG &
+nohup ./ReactionetLasso.py -m ARS1rep100kDT14sp14tp5bn -p 0.05 -o 2 -a PriorGraph_0 -g ramsayFG &
+nohup ./ReactionetLasso.py -m ARS1rep100kDT14sp14tp -p 0 -o 2 -a PriorGraph_0 -g ramsayFG &
+nohup ./ReactionetLasso.py -m ARS1rep100kDT14sp14tp -p 0 -o 1 -g ramsayFG &
+
+nohup ./ReactionetLasso.py -m ARS1rep100kDT14sp14tp5bn -p 0.05 -o 2 -g splines &
+nohup ./ReactionetLasso.py -m ARS2rep100kDT14sp14tp5bn -p 0.05 -o 2 -g splines &
+nohup ./ReactionetLasso.py -m ARS3rep100kDT14sp14tp5bn -p 0.05 -o 2 -g splines &
+nohup ./ReactionetLasso.py -m ARS4rep100kDT14sp14tp5bn -p 0.05 -o 2 -g splines &
+nohup ./ReactionetLasso.py -m ARS5rep100kDT14sp14tp5bn -p 0.05 -o 2 -g splines &
+
+nohup ./ReactionetLasso.py -m ARS1rep100kDT14sp14tp5bn -p 0.05 -o 1 -g splines &
+nohup ./ReactionetLasso.py -m ARS2rep100kDT14sp14tp5bn -p 0.05 -o 1 -g splines &
+nohup ./ReactionetLasso.py -m ARS3rep100kDT14sp14tp5bn -p 0.05 -o 1 -g splines &
+nohup ./ReactionetLasso.py -m ARS4rep100kDT14sp14tp5bn -p 0.05 -o 1 -g splines &
+nohup ./ReactionetLasso.py -m ARS5rep100kDT14sp14tp5bn -p 0.05 -o 1 -g splines &
+
+
+nohup ./ReactionetLasso.py -m ARS1rep100kDT14sp14tp5bn -p 0.05 -o 2 -a PriorGraph_0 -g splines &
+nohup ./ReactionetLasso.py -m ARS1rep100kDT14sp14tp5bn -p 0.05 -o 2 -a PriorGraph_501 -g splines &
+
+nohup ./ReactionetLasso.py -m ARS1rep100kDT14sp14tp -p 0 -o 2 -a PriorGraph_0 -g splines &
+nohup ./ReactionetLasso.py -m ARS1rep100kDT14sp14tp -p 0 -o 2  -g splines &
+
+
+nohup ./ReactionetLasso.py -m ARS1rep100kDT14sp14tp -p 0 -o 2 -a PriorGraph_0 -g ramsayFG &
+nohup ./ReactionetLasso.py -m ARS1rep100kDT14sp14tp -p 0 -o 2  -g ramsayFG &
+
+nohup ./ReactionetLasso.py -m ARS1rep100kDT14sp14tp5bn -p 0.05 -o 2 -a PriorGraph_0 -g ramsayFG &
+nohup ./ReactionetLasso.py -m ARS1rep100kDT14sp14tp5bn -p 0.05 -o 2 -g ramsayFG &
+
+scp data/ARS1rep100kDT14sp14tp5bn/PriorGraph_*.mat  klanna@euler.ethz.ch:/cluster/scratch/klanna/ReactionetLasso/data/ARS1rep100kDT14sp14tp5bn/
+scp data/TIA6b100kUT58sp33tp5bn/PriorGraph_*.mat  klanna@euler.ethz.ch:/cluster/scratch/klanna/ReactionetLasso/data/TIA6b100kUT58sp33tp5bn/
+
+scp data/ARS1rep100kDT14sp14tp/PriorGraph_*.mat  klanna@euler.ethz.ch:/cluster/scratch/klanna/ReactionetLasso/data/ARS1rep100kDT14sp14tp/
+scp data/TIA6b100kUT58sp33tp/PriorGraph_*.mat  klanna@euler.ethz.ch:/cluster/scratch/klanna/ReactionetLasso/data/TIA6b100kUT58sp33tp/
+
+
+bsub -n 2 -e ../JOBS/BM_lsq1_ARS_ERR.txt -o ../JOBS/BM_lsq1_ARS_OUT.txt -W "4:00" -R "rusage[mem=4048]" matlab -singleCompThread -nodisplay -r BruntonMethod2"('lassoLSQ', 'ARS5rep100kDT14sp14tp5bn', 0.05, 1)"
+bsub -n 2 -e ../JOBS/BM_lsq_ARS_ERR.txt -o ../JOBS/BM_lsq_ARS_OUT.txt -W "4:00" -R "rusage[mem=4048]" matlab -singleCompThread -nodisplay -r BruntonMethod2"('lassoLSQ', 'ARS5rep100kDT14sp14tp5bn', 0.05)"
+
+bsub -n 2 -e ../JOBS/BM_ch1_ARS_ERR.txt -o ../JOBS/BM_ch1_ARS_OUT.txt -W "4:00" -R "rusage[mem=4048]" matlab -singleCompThread -nodisplay -r BruntonMethod2"('lasso', 'ARS5rep100kDT14sp14tp5bn', 0.05, 1)"
+bsub -n 2 -e ../JOBS/BM_ch_ARS_ERR.txt -o ../JOBS/BM_ch_ARS_OUT.txt -W "4:00" -R "rusage[mem=4048]" matlab -singleCompThread -nodisplay -r BruntonMethod2"('lasso', 'ARS5rep100kDT14sp14tp5bn', 0.05)"
+
+bsub -n 2 -e ../JOBS/BM_seq1_ARS_ERR.txt -o ../JOBS/BM_seq1_ARS_OUT.txt -W "4:00" -R "rusage[mem=4048]" matlab -singleCompThread -nodisplay -r BruntonMethod2"('SeqThresLSQ', 'ARS5rep100kDT14sp14tp5bn', 0.05, 1)"
+bsub -n 2 -e ../JOBS/BM_seq_ARS_ERR.txt -o ../JOBS/BM_seq_ARS_OUT.txt -W "4:00" -R "rusage[mem=4048]" matlab -singleCompThread -nodisplay -r BruntonMethod2"('SeqThresLSQ', 'ARS5rep100kDT14sp14tp5bn', 0.05)"
+
+bsub -n 2 -e ../JOBS/BM_tf_ARS_ERR.txt -o ../JOBS/BM_tf1_ARS_OUT.txt -W "4:00" -R "rusage[mem=4048]" matlab -singleCompThread -nodisplay -r BruntonMethod2"('TopFiltr', 'ARS5rep100kDT14sp14tp5bn', 0.05, 1)"
+bsub -n 2 -e ../JOBS/BM_tf_ARS_ERR.txt -o ../JOBS/BM_tf_ARS_OUT.txt -W "4:00" -R "rusage[mem=4048]" matlab -singleCompThread -nodisplay -r BruntonMethod2"('TopFiltr', 'ARS5rep100kDT14sp14tp5bn', 0.05)"
+
+
+bsub -n 2 -e ../JOBS/BM_lsq1_TIA_ERR.txt -o ../JOBS/BM_lsq1_TIA_OUT.txt -W "120:00" -R "rusage[mem=4048]" matlab -singleCompThread -nodisplay -r BruntonMethod2"('lassoLSQ', 'TIA6b100kUT58sp33tp5bn', 0.05, 1)"
+bsub -n 2 -e ../JOBS/BM_lsq_TIA_ERR.txt -o ../JOBS/BM_lsq_TIA_OUT.txt -W "120:00" -R "rusage[mem=4048]" matlab -singleCompThread -nodisplay -r BruntonMethod2"('lassoLSQ', 'TIA6b100kUT58sp33tp5bn', 0.05)"
+
+bsub -n 2 -e ../JOBS/BM_ch1_TIA_ERR.txt -o ../JOBS/BM_ch1_TIA_OUT.txt -W "120:00" -R "rusage[mem=4048]" matlab -singleCompThread -nodisplay -r BruntonMethod2"('lasso', 'TIA6b100kUT58sp33tp5bn', 0.05, 1)"
+bsub -n 2 -e ../JOBS/BM_ch_TIA_ERR.txt -o ../JOBS/BM_ch_TIA_OUT.txt -W "120:00" -R "rusage[mem=4048]" matlab -singleCompThread -nodisplay -r BruntonMethod2"('lasso', 'TIA6b100kUT58sp33tp5bn', 0.05)"
+
+bsub -n 2 -e ../JOBS/BM_seq1_TIA_ERR.txt -o ../JOBS/BM_seq1_TIA_OUT.txt -W "120:00" -R "rusage[mem=4048]" matlab -singleCompThread -nodisplay -r BruntonMethod2"('SeqThresLSQ', 'TIA6b100kUT58sp33tp5bn', 0.05, 1)"
+bsub -n 2 -e ../JOBS/BM_seq_TIA_ERR.txt -o ../JOBS/BM_seq_TIA_OUT.txt -W "120:00" -R "rusage[mem=8096]" matlab -singleCompThread -nodisplay -r BruntonMethod2"('SeqThresLSQ', 'TIA6b100kUT58sp33tp5bn', 0.05)"
+
+bsub -n 2 -e ../JOBS/BM_tf_TIA_ERR.txt -o ../JOBS/BM_tf1_TIA_OUT.txt -W "120:00" -R "rusage[mem=4048]" matlab -singleCompThread -nodisplay -r BruntonMethod2"('TopFiltr', 'TIA6b100kUT58sp33tp5bn', 0.05, 1)"
+bsub -n 2 -e ../JOBS/BM_tf_TIA_ERR.txt -o ../JOBS/BM_tf_TIA_OUT.txt -W "120:00" -R "rusage[mem=8096]" matlab -singleCompThread -nodisplay -r BruntonMethod2"('TopFiltr', 'TIA6b100kUT58sp33tp5bn', 0.05)"
+
+nohup ./ReactionetLasso.py -m TIA6b100kUT58sp33tp5bn -p 0.05 -o 2 -g splines -a PriorStoich1  &
+
+
+
+nohup ./ReactionetLasso.py -m ARS10kDT14sp15tp -p 0 -o 2 -g splines  &
+nohup ./ReactionetLasso.py -m ARS1kDT14sp15tp -p 0 -o 2 -g splines  &
+
+
+nohup ./ReactionetLasso.py -m ARS100kDT14sp15tp5bn -p 0.05 -o 2 -g splines  &
+
+nohup ./ReactionetLasso.py -m ARS100kDT14sp15tp5bn -p 0.05 -o 1 -g splines  &
+
+
+nohup ./ReactionetLasso.py -m ARS1rep100kDT14sp14tp5bn -p 0.05 -o 2 -g splinessm  &
+
+nohup ./ReactionetLasso.py -m ARS1rep100kDT14sp14tp -p 1 -o 2 -g splinessm  &
+nohup ./ReactionetLasso.py -m ARS1rep100kDT14sp14tp -p 1 -o 2 -g bsplines4  &
+
+nohup ./ReactionetLasso.py -m ARS1rep100kDT14sp14tp -p 0 -o 2 -g ramsayFG  &
+
+nohup ./ReactionetLasso.py -m ARS1rep100kDT14sp14tp5bn -p 0.05 -o 2 -g ramsayFG  &
+
+
+nohup ./ReactionetLasso.py -m ARS1rep100kDT14sp14tp5bn -p 0.05 -o 1 -g ramsayFG  &
+
+nohup ./ReactionetLasso.py -m ARS1rep100kDT14sp14tp5bn -p 0.05 -o 2 -g bsplines4  &
+
+
+nohup ./ReactionetLasso.py -m TIA6b100kUT58sp33tp5bn -p 0.05 -o 2 -g splines -i 120 -e 8 &
+
+
 
 nohup ./ReactionetLasso.py -m 20150728TRAILHeLa4 -p 0.05 -o 2 -g splines2 -t PriorTopology1 -a PriorStoich1 &
 nohup ./ReactionetLasso.py -m 20150728TRAILHeLa4 -p 0.05 -o 2 -g splines2 -t PriorTopology1 -c connected -a PriorStoich1 &
 
 
-nohup ./PrepareMomentCluster.py -m RealTIA5bn100k17tp2 -p 0 -o 2 -g splines2 &
+nohup ./PrepareMomentCluster.py -m RealTIA5bn100k17tp2 -p 0 -o 2 -g splines &
 
 nohup ./ReactionetLasso.py -m RealTIA5bn100k33tp2 -p 0.05 -o 2 -g splines2 -t PriorTopology1 -c connected -a PriorStoich1 &
 nohup ./ReactionetLasso.py -m RealTIA5bn100k33tp2 -p 0.05 -o 2 -g splines2 -t PriorTopology1 -a PriorStoich1 &
 
 
 nohup ./ReactionetLasso.py -m RealTIA5bn100k17tp2 -p 0.05 -o 2 -g splines2 -t PriorTopology1 -a PriorStoich1 &
+nohup ./ReactionetLasso.py -m RealTIA5bn100k17tp2 -p 0.05 -o 2 -g splines2 -a PriorStoich1 &
 
 nohup ./PrepareMomentCluster.py -m TIA6b100kUT58sp33tp5bn -p 0 -o 2 -g splines &
 
